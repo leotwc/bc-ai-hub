@@ -1,6 +1,16 @@
 import { useEffect } from 'react';
+import {
+  articles,
+  categories,
+  faqs,
+  getArticleBySlug,
+  getRelatedArticles,
+  keywords,
+  resources,
+  snippets
+} from './content';
 
-export default function BCAIHub() {
+function AdSenseLoader() {
   useEffect(() => {
     const meta = document.createElement('meta');
     meta.name = 'google-adsense-account';
@@ -9,7 +19,8 @@ export default function BCAIHub() {
 
     const script = document.createElement('script');
     script.async = true;
-    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4451848283183398';
+    script.src =
+      'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4451848283183398';
     script.crossOrigin = 'anonymous';
     document.head.appendChild(script);
 
@@ -19,306 +30,345 @@ export default function BCAIHub() {
     };
   }, []);
 
-  const articles = [
-    {
-      title: 'How to Handle Empty Expiration Date in Business Central',
-      slug: '/blog/patch-empty-expiration-date',
-      read: '6 min read',
-      category: 'Inventory',
-      description: 'Learn how to automatically patch empty expiration dates using AL development and warehouse validation logic.'
-    },
-    {
-      title: 'Business Central Item Tracking Best Practices',
-      slug: '/blog/item-tracking-best-practices',
-      read: '8 min read',
-      category: 'Warehouse',
-      description: 'Best practices for lot tracking, serial numbers, warehouse posting, and inventory management.'
-    },
-    {
-      title: 'AL Code to Validate Lot Expiry',
-      slug: '/blog/validate-lot-expiry',
-      read: '5 min read',
-      category: 'AL Development',
-      description: 'Implement lot expiry validation logic in Business Central using AL language.'
-    },
-    {
-      title: 'Business Central API Integration Guide',
-      slug: '/blog/business-central-api-guide',
-      read: '9 min read',
-      category: 'Integration',
-      description: 'Step-by-step guide to integrating external APIs using HttpClient and JSON in AL.'
-    },
-    {
-      title: 'Send Email from Business Central using AL',
-      slug: '/blog/send-email-al',
-      read: '4 min read',
-      category: 'Automation',
-      description: 'Use AL code to automate email sending with custom templates and attachments.'
-    },
-    {
-      title: 'Business Central Posting Date Validation',
-      slug: '/blog/posting-date-validation',
-      read: '7 min read',
-      category: 'Finance',
-      description: 'Prevent invalid posting dates and improve accounting control with AL validation.'
-    },
-    {
-      title: 'How to Build AI Automation in Business Central',
-      slug: '/blog/ai-automation-business-central',
-      read: '10 min read',
-      category: 'AI',
-      description: 'Discover practical ways to integrate AI workflows into ERP business processes.'
-    },
-    {
-      title: 'Top ChatGPT Prompts for AL Developers',
-      slug: '/blog/chatgpt-prompts-al',
-      read: '6 min read',
-      category: 'AI Prompt',
-      description: 'Boost AL development productivity using reusable AI prompts for Business Central.'
-    },
-    {
-      title: 'Create Table Extensions in AL',
-      slug: '/blog/table-extension-al',
-      read: '5 min read',
-      category: 'AL Development',
-      description: 'Learn how to extend Business Central tables with custom fields and validations.'
-    },
-    {
-      title: 'How to Consume REST API in AL',
-      slug: '/blog/rest-api-al',
-      read: '9 min read',
-      category: 'API',
-      description: 'Use HttpClient and JsonObject in AL to consume external REST APIs securely.'
-    },
-    {
-      title: 'Business Central Warehouse Automation',
-      slug: '/blog/warehouse-automation',
-      read: '8 min read',
-      category: 'Warehouse',
-      description: 'Automate warehouse posting, inventory movement, and scanning processes.'
-    },
-    {
-      title: 'AI Copilot Ideas for Business Central',
-      slug: '/blog/copilot-ideas',
-      read: '11 min read',
-      category: 'AI',
-      description: 'Explore real-world Copilot use cases and AI assistants for ERP operations.'
-    }
-  ];
+  return null;
+}
 
-  const snippets = [
-    {
-      title: 'Patch Empty Expiration Date',
-      category: 'Inventory',
-      desc: 'Automatically populate expiration date during warehouse posting.'
-    },
-    {
-      title: 'Validate Posting Date',
-      category: 'Finance',
-      desc: 'Prevent users from posting outside allowed posting ranges.'
-    },
-    {
-      title: 'JSON API Authentication',
-      category: 'Integration',
-      desc: 'Authenticate external REST APIs using AL HttpClient.'
-    }
-  ];
+function SectionHeader({ eyebrow, title, description, action }) {
+  return (
+    <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div>
+        {eyebrow ? (
+          <div className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">
+            {eyebrow}
+          </div>
+        ) : null}
+        <h2 className="text-3xl font-bold leading-tight text-gray-950">{title}</h2>
+        {description ? (
+          <p className="mt-3 max-w-2xl text-lg leading-relaxed text-gray-600">{description}</p>
+        ) : null}
+      </div>
+      {action}
+    </div>
+  );
+}
 
-  const keywords = [
-    'Business Central AI Automation',
-    'AL Development Tutorial',
-    'Dynamics 365 API Integration',
-    'Business Central Copilot',
-    'AI for ERP Systems'
-  ];
+function ArticleCard({ article }) {
+  return (
+    <article className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+      <div className="mb-4 flex items-center justify-between gap-3 text-sm text-gray-500">
+        <span>{article.read}</span>
+        <span className="rounded-full bg-gray-100 px-3 py-1 text-gray-700">{article.category}</span>
+      </div>
+      <h3 className="mb-4 text-2xl font-semibold leading-snug text-gray-950">{article.title}</h3>
+      <p className="mb-6 leading-relaxed text-gray-600">{article.description}</p>
+      <a className="font-semibold text-gray-950 hover:underline" href={article.slug}>
+        Read Article -&gt;
+      </a>
+    </article>
+  );
+}
+
+function HomePage() {
+  const featuredArticles = articles.slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
-      {/* HERO SECTION */}
-      <section className="px-6 py-20 max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <div className="inline-block px-4 py-2 rounded-full bg-black text-white text-sm mb-6">
-              Microsoft Dynamics 365 Business Central + AI
-            </div>
-
-            <h1 className="text-5xl font-bold leading-tight mb-6">
-              Microsoft Dynamics 365 Business Central Development with AI
-            </h1>
-
-            <p className="text-lg text-gray-600 leading-relaxed mb-8">
-              Learn AL development, integrations, automation, AI prompts, and
-              Business Central best practices with real-world developer examples.
-            </p>
-
-            <div className="flex flex-wrap gap-4">
-              <button className="px-6 py-3 rounded-2xl bg-black text-white font-medium shadow-lg hover:scale-105 transition-transform">
-                Explore Tutorials
-              </button>
-
-              <button className="px-6 py-3 rounded-2xl border border-gray-300 bg-white hover:bg-gray-100 transition">
-                View AL Snippets
-              </button>
-            </div>
+    <>
+      <section className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[1fr_0.8fr] lg:items-center">
+        <div>
+          <div className="mb-6 inline-block rounded-full bg-black px-4 py-2 text-sm text-white">
+            Microsoft Dynamics 365 Business Central + AI
           </div>
+          <h1 className="mb-6 text-5xl font-bold leading-tight text-gray-950">
+            Microsoft Dynamics 365 Business Central Development with AI
+          </h1>
+          <p className="mb-8 max-w-2xl text-lg leading-relaxed text-gray-600">
+            Learn AL development, integrations, automation, AI prompts, and Business Central
+            best practices with practical developer examples.
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <a
+              className="rounded-lg bg-black px-6 py-3 font-medium text-white shadow-lg transition hover:-translate-y-0.5"
+              href="#articles"
+            >
+              Explore Tutorials
+            </a>
+            <a
+              className="rounded-lg border border-gray-300 bg-white px-6 py-3 font-medium transition hover:bg-gray-100"
+              href="#snippets"
+            >
+              View AL Snippets
+            </a>
+          </div>
+        </div>
 
-          <div className="bg-white rounded-3xl p-8 shadow-2xl border border-gray-100">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold">Trending AI Prompt</h2>
-
-              <span className="text-sm bg-gray-100 px-3 py-1 rounded-full">
-                GPT + AL
-              </span>
-            </div>
-
-            <div className="bg-gray-900 text-green-400 rounded-2xl p-5 text-sm overflow-auto">
-              <pre className="whitespace-pre-wrap font-mono">
-{`Generate AL code for Business Central that:
+        <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-xl">
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <h2 className="text-xl font-semibold text-gray-950">Trending AI Prompt</h2>
+            <span className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700">GPT + AL</span>
+          </div>
+          <div className="overflow-auto rounded-lg bg-gray-950 p-5 text-sm text-green-300">
+            <pre className="whitespace-pre-wrap font-mono">{`Generate AL code for Business Central that:
 
 - validates expiration date
 - blocks expired inventory posting
 - supports item tracking
 - displays custom error messages
-- includes best practices and comments`}
-              </pre>
-            </div>
+- includes best practices and comments`}</pre>
           </div>
         </div>
       </section>
 
-      {/* SNIPPETS SECTION */}
-      <section className="px-6 py-16 max-w-7xl mx-auto">
-        <div className="mb-10">
-          <h2 className="text-3xl font-bold mb-3">
-            Latest AL Snippets
-          </h2>
-
-          <p className="text-gray-600 text-lg">
-            Reusable Business Central development examples for real ERP projects.
-          </p>
+      <section className="bg-white px-6 py-16" id="categories">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader
+            eyebrow="Browse by focus"
+            title="Business Central Learning Blocks"
+            description="Jump into the topics ERP teams ask for most: AL development, warehouse control, integrations, and AI workflows."
+          />
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {categories.map((category) => (
+              <div key={category.name} className="rounded-lg border border-gray-200 bg-gray-50 p-6">
+                <div className="mb-4 text-sm font-semibold text-gray-500">{category.count} guides</div>
+                <h3 className="mb-3 text-xl font-semibold text-gray-950">{category.name}</h3>
+                <p className="leading-relaxed text-gray-600">{category.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
+      </section>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {snippets.map((item, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-3xl p-6 border border-gray-100 shadow-lg hover:-translate-y-1 transition-transform"
+      <section className="mx-auto max-w-7xl px-6 py-16" id="snippets">
+        <SectionHeader
+          eyebrow="Reusable patterns"
+          title="Latest AL Snippets"
+          description="Focused Business Central development examples for real ERP projects."
+        />
+        <div className="grid gap-6 md:grid-cols-3">
+          {snippets.map((item) => (
+            <article
+              key={item.title}
+              className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
             >
-              <div className="inline-block px-3 py-1 rounded-full bg-gray-100 text-sm mb-4">
+              <div className="mb-4 inline-block rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700">
                 {item.category}
               </div>
-
-              <h3 className="text-2xl font-semibold mb-4 leading-snug">
-                {item.title}
-              </h3>
-
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                {item.desc}
-              </p>
-
-              <button className="font-medium hover:underline">
-                Read More →
-              </button>
-            </div>
+              <h3 className="mb-4 text-2xl font-semibold leading-snug text-gray-950">{item.title}</h3>
+              <p className="mb-6 leading-relaxed text-gray-600">{item.desc}</p>
+              <a className="font-semibold text-gray-950 hover:underline" href={item.slug}>
+                Read More -&gt;
+              </a>
+            </article>
           ))}
         </div>
       </section>
 
-      {/* SEO KEYWORDS SECTION */}
-      <section className="px-6 py-20 bg-white border-y border-gray-100">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10">
-          <div className="bg-black text-white rounded-3xl p-10 shadow-2xl">
-            <h2 className="text-3xl font-bold mb-6">
-              High Value ERP Keywords
-            </h2>
-
+      <section className="border-y border-gray-200 bg-white px-6 py-20">
+        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-2">
+          <div className="rounded-lg bg-black p-10 text-white shadow-xl">
+            <h2 className="mb-6 text-3xl font-bold">High Value ERP Keywords</h2>
             <div className="space-y-4 text-gray-300">
-              {keywords.map((keyword, index) => (
-                <div key={index}>• {keyword}</div>
+              {keywords.map((keyword) => (
+                <div key={keyword}>- {keyword}</div>
               ))}
             </div>
           </div>
-
-          <div className="bg-gray-50 rounded-3xl p-10 border border-gray-100 shadow-xl">
-            <h2 className="text-3xl font-bold mb-6">
-              Why This Site Matters
-            </h2>
-
-            <div className="space-y-5 text-gray-700 leading-relaxed">
-              <p>
-                Business Central developers are searching daily for practical AL examples,
-                integrations, AI automation, and troubleshooting solutions.
-              </p>
-
-              <p>
-                This platform focuses on real-world ERP development scenarios instead of generic tutorials.
-              </p>
-
-              <p>
-                Combining AI with Business Central development creates a strong long-term SEO opportunity.
-              </p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-10 shadow-sm">
+            <h2 className="mb-6 text-3xl font-bold text-gray-950">Practical Resource Blocks</h2>
+            <div className="space-y-4 text-gray-700">
+              {resources.map((resource) => (
+                <div key={resource} className="rounded-lg bg-white p-4 shadow-sm">
+                  {resource}
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* BLOG SECTION */}
-      <section className="px-6 py-20 max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-10">
-          <div>
-            <h2 className="text-3xl font-bold mb-3">
-              Latest SEO Articles
-            </h2>
-
-            <p className="text-gray-600 text-lg">
-              Business Central tutorials designed for Google search traffic.
-            </p>
-          </div>
-
-          <button className="px-5 py-3 rounded-2xl bg-black text-white shadow-lg hover:scale-105 transition-transform">
-            View All Articles
-          </button>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {articles.map((article, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-3xl p-6 border border-gray-100 shadow-lg hover:-translate-y-1 transition-transform"
-            >
-              <div className="text-sm text-gray-500 mb-4">
-                {article.read}
-              </div>
-
-              <h3 className="text-2xl font-semibold mb-5 leading-snug">
-                {article.title}
-              </h3>
-
-              <a
-                href={article.slug}
-                className="font-medium hover:underline"
-              >
-                Read Article →
-              </a>
-            </div>
+      <section className="mx-auto max-w-7xl px-6 py-20">
+        <SectionHeader
+          eyebrow="Featured tutorials"
+          title="Start with these Business Central guides"
+          description="Use these as the first implementation blocks for validation, integration, and warehouse control."
+        />
+        <div className="grid gap-6 lg:grid-cols-3">
+          {featuredArticles.map((article) => (
+            <ArticleCard key={article.slug} article={article} />
           ))}
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="px-6 py-10 border-t border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <section className="bg-gray-950 px-6 py-16 text-white">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1fr] lg:items-center">
           <div>
-            <h3 className="font-bold text-lg">BCDevAI</h3>
-
-            <p className="text-sm text-gray-500">
-              Business Central Development with AI
+            <h2 className="mb-4 text-3xl font-bold">Get the next BC AI block</h2>
+            <p className="leading-relaxed text-gray-300">
+              A lightweight newsletter block for future article drops, snippet packs, and practical
+              Business Central AI ideas.
             </p>
           </div>
+          <form className="grid gap-3 sm:grid-cols-[1fr_auto]">
+            <label className="sr-only" htmlFor="email">
+              Email address
+            </label>
+            <input
+              className="min-h-12 rounded-lg border border-white/20 bg-white px-4 text-gray-950 outline-none focus:border-white"
+              id="email"
+              placeholder="developer@example.com"
+              type="email"
+            />
+            <button className="min-h-12 rounded-lg bg-white px-6 font-semibold text-gray-950 transition hover:bg-gray-200">
+              Join List
+            </button>
+          </form>
+        </div>
+      </section>
 
-          <div className="text-sm text-gray-500">
-            © 2026 BCDevAI. All rights reserved.
+      <section className="mx-auto max-w-7xl px-6 py-20" id="articles">
+        <SectionHeader
+          eyebrow="All articles"
+          title="Latest SEO Articles"
+          description="Business Central tutorials designed for Google search traffic and day-to-day ERP development."
+          action={
+            <a
+              className="rounded-lg bg-black px-5 py-3 font-medium text-white shadow-lg transition hover:-translate-y-0.5"
+              href="#articles"
+            >
+              View All Articles
+            </a>
+          }
+        />
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {articles.map((article) => (
+            <ArticleCard key={article.slug} article={article} />
+          ))}
+        </div>
+      </section>
+
+      <section className="border-t border-gray-200 bg-white px-6 py-16">
+        <div className="mx-auto max-w-4xl">
+          <SectionHeader
+            eyebrow="FAQ"
+            title="Business Central AI Development Questions"
+            description="Short answers for teams planning extension-safe automation and ERP AI workflows."
+          />
+          <div className="space-y-4">
+            {faqs.map((faq) => (
+              <details key={faq.question} className="rounded-lg border border-gray-200 bg-gray-50 p-5">
+                <summary className="cursor-pointer text-lg font-semibold text-gray-950">
+                  {faq.question}
+                </summary>
+                <p className="mt-3 leading-relaxed text-gray-600">{faq.answer}</p>
+              </details>
+            ))}
           </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+function ArticlePage({ article }) {
+  const relatedArticles = getRelatedArticles(article.slug, article.category);
+
+  useEffect(() => {
+    document.title = `${article.title} | BCDevAI`;
+  }, [article.title]);
+
+  return (
+    <main>
+      <section className="border-b border-gray-200 bg-white px-6 py-16">
+        <div className="mx-auto max-w-4xl">
+          <a className="mb-8 inline-block font-semibold text-gray-700 hover:underline" href="/">
+            &lt;- Back to all guides
+          </a>
+          <div className="mb-5 flex flex-wrap gap-3 text-sm text-gray-500">
+            <span className="rounded-full bg-gray-100 px-3 py-1">{article.category}</span>
+            <span className="rounded-full bg-gray-100 px-3 py-1">{article.read}</span>
+          </div>
+          <h1 className="mb-6 text-4xl font-bold leading-tight text-gray-950 md:text-5xl">
+            {article.title}
+          </h1>
+          <p className="text-xl leading-relaxed text-gray-600">{article.description}</p>
+        </div>
+      </section>
+
+      <article className="mx-auto max-w-4xl px-6 py-14">
+        <p className="mb-10 text-lg leading-8 text-gray-700">{article.intro}</p>
+        <div className="space-y-10">
+          {article.sections.map((section) => (
+            <section key={section.heading}>
+              <h2 className="mb-4 text-2xl font-bold text-gray-950">{section.heading}</h2>
+              <p className="leading-8 text-gray-700">{section.body}</p>
+            </section>
+          ))}
+        </div>
+
+        <div className="mt-12 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-2xl font-bold text-gray-950">Key Takeaways</h2>
+          <ul className="space-y-3 text-gray-700">
+            {article.takeaways.map((takeaway) => (
+              <li key={takeaway}>- {takeaway}</li>
+            ))}
+          </ul>
+        </div>
+      </article>
+
+      <section className="border-t border-gray-200 bg-white px-6 py-14">
+        <div className="mx-auto max-w-5xl">
+          <SectionHeader
+            title="Related Business Central Guides"
+            description="Continue with nearby implementation topics from the same area."
+          />
+          <div className="grid gap-6 md:grid-cols-3">
+            {relatedArticles.map((related) => (
+              <ArticleCard key={related.slug} article={related} />
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function NotFoundPage() {
+  return (
+    <main className="mx-auto flex min-h-[70vh] max-w-3xl flex-col justify-center px-6 py-20">
+      <div className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-500">404</div>
+      <h1 className="mb-5 text-4xl font-bold text-gray-950">This Business Central block is not ready yet.</h1>
+      <p className="mb-8 text-lg leading-relaxed text-gray-600">
+        The guide you opened does not match one of the published article routes. Head back to the
+        homepage to browse the available tutorials.
+      </p>
+      <a className="w-fit rounded-lg bg-black px-6 py-3 font-semibold text-white" href="/">
+        Back to Homepage
+      </a>
+    </main>
+  );
+}
+
+export default function BCAIHub() {
+  const pathname = window.location.pathname;
+  const article = getArticleBySlug(pathname);
+  const isHome = pathname === '/' || pathname === '/index.html';
+
+  useEffect(() => {
+    if (isHome) {
+      document.title = 'BCDevAI | Business Central Development with AI';
+    }
+  }, [isHome]);
+
+  return (
+    <div className="min-h-screen bg-gray-50 text-gray-900">
+      <AdSenseLoader />
+      {isHome ? <HomePage /> : article ? <ArticlePage article={article} /> : <NotFoundPage />}
+      <footer className="border-t border-gray-200 bg-white px-6 py-10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row">
+          <div>
+            <h3 className="text-lg font-bold text-gray-950">BCDevAI</h3>
+            <p className="text-sm text-gray-500">Business Central Development with AI</p>
+          </div>
+          <div className="text-sm text-gray-500">Copyright 2026 BCDevAI. All rights reserved.</div>
         </div>
       </footer>
     </div>
