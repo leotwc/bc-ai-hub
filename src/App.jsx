@@ -10,29 +10,6 @@ import {
   snippets
 } from './content';
 
-function AdSenseLoader() {
-  useEffect(() => {
-    const meta = document.createElement('meta');
-    meta.name = 'google-adsense-account';
-    meta.content = 'ca-pub-4451848283183398';
-    document.head.appendChild(meta);
-
-    const script = document.createElement('script');
-    script.async = true;
-    script.src =
-      'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4451848283183398';
-    script.crossOrigin = 'anonymous';
-    document.head.appendChild(script);
-
-    return () => {
-      document.head.removeChild(meta);
-      document.head.removeChild(script);
-    };
-  }, []);
-
-  return null;
-}
-
 function SectionHeader({ eyebrow, title, description, action }) {
   return (
     <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -360,7 +337,6 @@ export default function BCAIHub() {
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
-      <AdSenseLoader />
       {isHome ? <HomePage /> : article ? <ArticlePage article={article} /> : <NotFoundPage />}
       <footer className="border-t border-gray-200 bg-white px-6 py-10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row">
