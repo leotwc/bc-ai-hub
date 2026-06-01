@@ -11,6 +11,58 @@ import {
   snippets
 } from './content';
 
+const SITE_URL = 'https://bcforge-ai.netlify.app';
+const SITE_NAME = 'BCDevAI';
+
+function setMeta(name, content, isProperty = false) {
+  const attr = isProperty ? 'property' : 'name';
+  let el = document.querySelector(`meta[${attr}="${name}"]`);
+  if (!el) {
+    el = document.createElement('meta');
+    el.setAttribute(attr, name);
+    document.head.appendChild(el);
+  }
+  el.content = content;
+}
+
+function setCanonical(path) {
+  let el = document.querySelector('link[rel="canonical"]');
+  if (!el) {
+    el = document.createElement('link');
+    el.rel = 'canonical';
+    document.head.appendChild(el);
+  }
+  el.href = `${SITE_URL}${path}`;
+}
+
+function setJsonLd(data) {
+  let el = document.getElementById('page-json-ld');
+  if (!el) {
+    el = document.createElement('script');
+    el.id = 'page-json-ld';
+    el.type = 'application/ld+json';
+    document.head.appendChild(el);
+  }
+  el.textContent = JSON.stringify(data);
+}
+
+function Header() {
+  return (
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 px-6 py-4 backdrop-blur">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6">
+        <a className="text-lg font-bold text-slate-950 hover:text-cyan-700" href="/">
+          {SITE_NAME}
+        </a>
+        <nav className="flex items-center gap-5 text-sm font-medium text-slate-600">
+          <a className="hover:text-cyan-700" href="/#articles">Articles</a>
+          <a className="hover:text-cyan-700" href="/#categories">Agent Types</a>
+          <a className="hover:text-cyan-700" href="/about">About</a>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
 function SectionHeader({ eyebrow, title, description, action, tone = 'light' }) {
   const isDark = tone === 'dark';
 
@@ -159,9 +211,38 @@ function ReleaseChangelogSection() {
 
 function HomePage() {
   const featuredArticles = articles.slice(0, 3);
+  const desc = 'Compare AI coding agents for Business Central AL development. Practical guides for Codex, GitHub Copilot, ChatGPT, Cursor, review agents, and custom ERP agents for Dynamics 365 extension work.';
+
+  useEffect(() => {
+    document.title = `${SITE_NAME} | Business Central AI Coding Agents`;
+    setMeta('description', desc);
+    setMeta('og:title', `${SITE_NAME} | Business Central AI Coding Agents`, true);
+    setMeta('og:description', desc, true);
+    setMeta('og:url', SITE_URL, true);
+    setMeta('og:type', 'website', true);
+    setCanonical('/');
+    setJsonLd([
+      {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: SITE_NAME,
+        url: SITE_URL,
+        description: desc
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map((faq) => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: { '@type': 'Answer', text: faq.answer }
+        }))
+      }
+    ]);
+  }, []);
 
   return (
-    <>
+    <main>
       <section className="border-b border-slate-200 bg-[radial-gradient(circle_at_top_right,#dff8ff_0,#f8fbff_34%,#ffffff_68%)] px-6 py-20">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_0.8fr] lg:items-center">
         <div>
@@ -375,7 +456,7 @@ function HomePage() {
           </div>
         </div>
       </section>
-    </>
+    </main>
   );
 }
 
@@ -383,8 +464,27 @@ function ArticlePage({ article }) {
   const relatedArticles = getRelatedArticles(article.slug, article.category);
 
   useEffect(() => {
-    document.title = `${article.title} | BCDevAI`;
-  }, [article.title]);
+    document.title = `${article.title} | ${SITE_NAME}`;
+    setMeta('description', article.description);
+    setMeta('og:title', `${article.title} | ${SITE_NAME}`, true);
+    setMeta('og:description', article.description, true);
+    setMeta('og:url', `${SITE_URL}${article.slug}`, true);
+    setMeta('og:type', 'article', true);
+    setCanonical(article.slug);
+    setJsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: article.title,
+      description: article.description,
+      url: `${SITE_URL}${article.slug}`,
+      publisher: {
+        '@type': 'Organization',
+        name: SITE_NAME,
+        url: SITE_URL
+      },
+      articleSection: article.category
+    });
+  }, [article]);
 
   return (
     <main>
@@ -456,6 +556,219 @@ function ArticlePage({ article }) {
   );
 }
 
+function AboutPage() {
+  useEffect(() => {
+    document.title = `About ${SITE_NAME} | Business Central AI Coding Agents`;
+    const desc = 'BCDevAI is a practical resource for Microsoft Dynamics 365 Business Central developers who want to understand how AI coding agents fit into AL extension development.';
+    setMeta('description', desc);
+    setMeta('og:title', `About ${SITE_NAME}`, true);
+    setMeta('og:description', desc, true);
+    setMeta('og:url', `${SITE_URL}/about`, true);
+    setMeta('og:type', 'website', true);
+    setCanonical('/about');
+    setJsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'AboutPage',
+      name: `About ${SITE_NAME}`,
+      url: `${SITE_URL}/about`,
+      description: 'BCDevAI is a practical resource for Business Central developers and consultants who want to use AI coding agents safely for AL extension work.'
+    });
+  }, []);
+
+  return (
+    <main className="mx-auto max-w-3xl px-6 py-16">
+      <a className="mb-8 inline-block font-semibold text-cyan-800 hover:text-cyan-950 hover:underline" href="/">
+        &lt;- Back to home
+      </a>
+
+      <h1 className="mb-6 text-4xl font-bold leading-tight text-slate-950">About BCDevAI</h1>
+      <p className="mb-8 text-lg leading-relaxed text-slate-600">
+        BCDevAI is a practical resource for Microsoft Dynamics 365 Business Central developers and
+        consultants who want to understand how AI coding agents can fit into AL extension development.
+      </p>
+
+      <div className="space-y-10">
+        <section>
+          <h2 className="mb-4 text-2xl font-bold text-slate-950">What we cover</h2>
+          <p className="mb-4 leading-relaxed text-slate-700">
+            The site compares different AI tools and agents — including OpenAI Codex, GitHub Copilot,
+            ChatGPT, codebase navigation editors such as Cursor and Windsurf, AI review tools, and
+            custom ERP agents — explaining where each one fits in a real Business Central development
+            workflow.
+          </p>
+          <ul className="space-y-3 text-slate-700">
+            {[
+              'What each AI tool does well for Business Central AL work',
+              'Which developer and consultant skills still matter alongside AI',
+              'Practical prompts and step-by-step workflows to start safely',
+              'Release changelogs for Business Central 2026 Wave 1 and beyond'
+            ].map((item) => (
+              <li key={item} className="flex gap-3 leading-relaxed">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-500" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section>
+          <h2 className="mb-4 text-2xl font-bold text-slate-950">Who this is for</h2>
+          <p className="leading-relaxed text-slate-700">
+            BCDevAI is written for Business Central developers, AL extension authors, and Dynamics 365
+            consultants who want to accelerate their work with AI tools while maintaining code quality,
+            upgrade safety, and business process integrity. If you need to choose between Codex and
+            Copilot, or want to know when to trust AI-generated AL code, this site aims to answer those
+            questions with practical guidance.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="mb-4 text-2xl font-bold text-slate-950">Contact</h2>
+          <p className="leading-relaxed text-slate-700">
+            For questions, corrections, or feedback about any article or guide on this site, reach out
+            by email:{' '}
+            <a className="font-medium text-cyan-800 hover:underline" href="mailto:wctan@dynamicbiz.com.my">
+              wctan@dynamicbiz.com.my
+            </a>
+          </p>
+        </section>
+      </div>
+    </main>
+  );
+}
+
+function PrivacyPolicyPage() {
+  useEffect(() => {
+    document.title = `Privacy Policy | ${SITE_NAME}`;
+    const desc = 'Privacy policy for BCDevAI — information about advertising, cookies, and data use on this Business Central AI coding-agent resource site.';
+    setMeta('description', desc);
+    setMeta('og:title', `Privacy Policy | ${SITE_NAME}`, true);
+    setMeta('og:description', desc, true);
+    setMeta('og:url', `${SITE_URL}/privacy-policy`, true);
+    setCanonical('/privacy-policy');
+    setJsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: `Privacy Policy | ${SITE_NAME}`,
+      url: `${SITE_URL}/privacy-policy`
+    });
+  }, []);
+
+  return (
+    <main className="mx-auto max-w-3xl px-6 py-16">
+      <a className="mb-8 inline-block font-semibold text-cyan-800 hover:text-cyan-950 hover:underline" href="/">
+        &lt;- Back to home
+      </a>
+
+      <h1 className="mb-3 text-4xl font-bold leading-tight text-slate-950">Privacy Policy</h1>
+      <p className="mb-10 text-sm text-slate-500">Effective date: June 1, 2026</p>
+
+      <div className="space-y-10 text-slate-700">
+        <section>
+          <h2 className="mb-4 text-2xl font-bold text-slate-950">About this site</h2>
+          <p className="leading-relaxed">
+            BCDevAI (<span className="font-medium text-slate-900">bcforge-ai.netlify.app</span>) is an
+            informational website about AI coding agents for Microsoft Dynamics 365 Business Central.
+            This site does not operate user accounts, process form submissions, or store personal data
+            on its own servers.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="mb-4 text-2xl font-bold text-slate-950">Advertising</h2>
+          <p className="mb-4 leading-relaxed">
+            This site displays advertisements served by{' '}
+            <strong className="text-slate-900">Google AdSense</strong> (publisher ID:
+            ca-pub-4451848283183398). Google uses cookies — including the DoubleClick cookie — to
+            serve ads based on your prior visits to this and other websites across the internet.
+          </p>
+          <p className="leading-relaxed">
+            You can opt out of personalized advertising by visiting{' '}
+            <a
+              className="font-medium text-cyan-800 hover:underline"
+              href="https://www.google.com/settings/ads"
+              rel="noreferrer"
+              target="_blank"
+            >
+              Google Ads Settings
+            </a>
+            . Alternatively, you can opt out of third-party vendor cookies for personalized advertising
+            by visiting{' '}
+            <a
+              className="font-medium text-cyan-800 hover:underline"
+              href="https://www.aboutads.info/choices/"
+              rel="noreferrer"
+              target="_blank"
+            >
+              aboutads.info
+            </a>
+            .
+          </p>
+        </section>
+
+        <section>
+          <h2 className="mb-4 text-2xl font-bold text-slate-950">Cookies</h2>
+          <p className="leading-relaxed">
+            BCDevAI itself does not set cookies. Google AdSense and its advertising partners may set
+            cookies in your browser to track browsing activity and deliver relevant advertisements. For
+            more information on how Google uses your data, see the{' '}
+            <a
+              className="font-medium text-cyan-800 hover:underline"
+              href="https://policies.google.com/privacy"
+              rel="noreferrer"
+              target="_blank"
+            >
+              Google Privacy Policy
+            </a>
+            .
+          </p>
+        </section>
+
+        <section>
+          <h2 className="mb-4 text-2xl font-bold text-slate-950">Analytics</h2>
+          <p className="leading-relaxed">
+            This site does not use Google Analytics or other user-tracking analytics tools.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="mb-4 text-2xl font-bold text-slate-950">Third-party links</h2>
+          <p className="leading-relaxed">
+            Articles on this site link to Microsoft Learn documentation and other external resources.
+            BCDevAI is not responsible for the privacy practices of those external sites.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="mb-4 text-2xl font-bold text-slate-950">{"Children's privacy"}</h2>
+          <p className="leading-relaxed">
+            This site is intended for professional software developers and IT consultants. It does not
+            knowingly collect information from children under the age of 13.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="mb-4 text-2xl font-bold text-slate-950">Changes to this policy</h2>
+          <p className="leading-relaxed">
+            If this privacy policy changes, the updated version will be posted on this page with a
+            revised effective date.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="mb-4 text-2xl font-bold text-slate-950">Contact</h2>
+          <p className="leading-relaxed">
+            For privacy-related questions, contact:{' '}
+            <a className="font-medium text-cyan-800 hover:underline" href="mailto:wctan@dynamicbiz.com.my">
+              wctan@dynamicbiz.com.my
+            </a>
+          </p>
+        </section>
+      </div>
+    </main>
+  );
+}
+
 function NotFoundPage() {
   return (
     <main className="mx-auto flex min-h-[70vh] max-w-3xl flex-col justify-center px-6 py-20">
@@ -476,23 +789,35 @@ export default function BCAIHub() {
   const pathname = window.location.pathname;
   const article = getArticleBySlug(pathname);
   const isHome = pathname === '/' || pathname === '/index.html';
+  const isAbout = pathname === '/about';
+  const isPrivacy = pathname === '/privacy-policy';
 
-  useEffect(() => {
-    if (isHome) {
-      document.title = 'BCDevAI | Business Central AI Coding Agents';
-    }
-  }, [isHome]);
+  let page;
+  if (isHome) page = <HomePage />;
+  else if (article) page = <ArticlePage article={article} />;
+  else if (isAbout) page = <AboutPage />;
+  else if (isPrivacy) page = <PrivacyPolicyPage />;
+  else page = <NotFoundPage />;
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      {isHome ? <HomePage /> : article ? <ArticlePage article={article} /> : <NotFoundPage />}
+      <Header />
+      {page}
       <footer className="border-t border-slate-200 bg-white px-6 py-10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row">
-          <div>
-            <h3 className="text-lg font-bold text-slate-950">BCDevAI</h3>
-            <p className="text-sm text-slate-500">Business Central AI coding-agent guides</p>
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+            <div>
+              <h3 className="text-lg font-bold text-slate-950">BCDevAI</h3>
+              <p className="text-sm text-slate-500">Business Central AI coding-agent guides</p>
+            </div>
+            <nav className="flex flex-wrap justify-center gap-5 text-sm text-slate-500">
+              <a className="hover:text-cyan-700" href="/">Home</a>
+              <a className="hover:text-cyan-700" href="/#articles">Articles</a>
+              <a className="hover:text-cyan-700" href="/about">About</a>
+              <a className="hover:text-cyan-700" href="/privacy-policy">Privacy Policy</a>
+            </nav>
+            <div className="text-sm text-slate-500">Copyright 2026 BCDevAI. All rights reserved.</div>
           </div>
-          <div className="text-sm text-slate-500">Copyright 2026 BCDevAI. All rights reserved.</div>
         </div>
       </footer>
     </div>

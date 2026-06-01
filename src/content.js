@@ -475,6 +475,31 @@ export const faqs = [
     question: 'What skills should a Business Central developer learn before using coding agents?',
     answer:
       'Learn AL object types, app.json, id ranges, page and table extensions, event subscribers, permissions, source control, and sandbox testing. These skills help you judge whether AI-generated code is safe.'
+  },
+  {
+    question: 'Is it safe to let an AI agent modify Business Central base application objects?',
+    answer:
+      'No. AI agents should only create or modify extension objects, never the base application. Modifying base tables or pages directly breaks upgrade paths and is unsupported by Microsoft. Always instruct your agent to stay inside extension-safe AL patterns using table extensions, page extensions, and event subscribers.'
+  },
+  {
+    question: 'What is the difference between GitHub Copilot and Codex for Business Central AL work?',
+    answer:
+      'GitHub Copilot is an inline VS Code assistant that suggests code as you type, working with local file context. Codex is a repository-aware autonomous agent that can inspect your whole AL project, run build commands, read compiler errors, and make multi-file changes. Use Copilot for fast inline help and Codex for larger, planned development tasks that need project-wide context.'
+  },
+  {
+    question: 'How do I test AI-generated AL code safely before going to production?',
+    answer:
+      'Publish the extension to a sandbox environment first. Test with a real user role, not just the SUPER role. Verify that new fields appear in the expected page locations, permissions work for normal users, and posting processes still complete correctly. Only promote to production after the extension passes a full review checklist covering object ids, captions, DataClassification, and upgrade safety.'
+  },
+  {
+    question: 'Do AI coding agents understand Business Central posting routines and document flows?',
+    answer:
+      'AI agents can draft code related to posting routines, but they do not automatically know your specific Business Central setup, localization rules, or approval workflows. Always review AI-generated code that touches posting codeunits, approval entries, ledger tables, or financial dimensions before publishing. Use a review agent to produce a risk checklist before merging.'
+  },
+  {
+    question: 'Can I use AI agents to help migrate from older Business Central versions or NAV?',
+    answer:
+      'Yes, AI agents can help analyze deprecated objects, suggest replacements for removed APIs such as API v1.0 removed in 2026 Wave 1, and draft replacement extension objects. Use a review agent to audit deprecated features in your codebase against the current removal list, then use a coding agent to propose the updated AL objects.'
   }
 ];
 
