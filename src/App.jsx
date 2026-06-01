@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import {
   articles,
   categories,
+  claudeCodeBenefits,
+  claudeCodeFeatures,
   codexBenefits,
   codexModelComparison,
   faqs,
@@ -417,6 +419,44 @@ function HomePage() {
                       <span className="text-sm font-medium text-slate-500">{item.bestFor}</span>
                     </div>
                     <p className="leading-relaxed text-slate-700">{item.businessCentralUse}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Claude Code Benefits */}
+      <section className="border-b border-slate-200 bg-white px-6 py-20">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader
+            eyebrow="Claude Code for AL teams"
+            title="What Claude Code does in Business Central development"
+            description="Practical guidance on how Claude Code's CLI approach, CLAUDE.md persistence, and MCP integration help AL extension work."
+          />
+          <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+            <div className="rounded-lg bg-slate-950 p-8 text-white shadow-xl shadow-slate-900/20">
+              <h3 className="mb-5 text-2xl font-bold">Core Benefits</h3>
+              <div className="space-y-5">
+                {claudeCodeBenefits.map((benefit) => (
+                  <div key={benefit.title} className="border-l-2 border-violet-400 pl-4">
+                    <h4 className="mb-1 font-semibold text-violet-200">{benefit.title}</h4>
+                    <p className="leading-relaxed text-slate-300">{benefit.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-lg border border-slate-200 bg-white p-8 shadow-sm shadow-slate-200/70">
+              <h3 className="mb-5 text-2xl font-bold text-slate-950">Key Commands for AL Sessions</h3>
+              <div className="space-y-4">
+                {claudeCodeFeatures.map((item) => (
+                  <div key={item.command} className="rounded-lg border border-slate-200 bg-white p-4 transition hover:border-violet-300 hover:bg-violet-50/40">
+                    <div className="mb-2 flex flex-wrap items-center gap-2">
+                      <span className="rounded-full bg-violet-50 px-3 py-1 font-mono text-sm font-semibold text-violet-800">{item.command}</span>
+                      <span className="text-sm font-medium text-slate-500">{item.label}</span>
+                    </div>
+                    <p className="leading-relaxed text-slate-700">{item.description}</p>
                   </div>
                 ))}
               </div>

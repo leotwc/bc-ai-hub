@@ -1005,6 +1005,62 @@ export const codexModelComparison = [
   }
 ];
 
+export const claudeCodeBenefits = [
+  {
+    title: 'Project-aware AL editing',
+    text:
+      'Claude Code reads your app.json, id ranges, existing object names, and folder structure before making any change — so generated AL follows your actual project conventions, not invented ones.'
+  },
+  {
+    title: 'CLAUDE.md for persistent BC rules',
+    text:
+      'Encode your object prefix, id range, extension safety rules, and build command in CLAUDE.md once. Claude Code loads it at the start of every session so you never repeat the same constraints in a prompt.'
+  },
+  {
+    title: 'Native MCP Server integration',
+    text:
+      'Claude Code connects directly to the BC MCP Server for AL (GA in update 28.1) using the claude mcp add command. It reads AL compiler diagnostics without you copying errors from the VS Code output panel.'
+  },
+  {
+    title: 'Checkpoint and undo system',
+    text:
+      'Press Esc twice to revert the last file edit and return to the previous checkpoint. This makes interactive AL debugging sessions safe — mistakes are undoable without touching git history.'
+  }
+];
+
+export const claudeCodeFeatures = [
+  {
+    command: '/init',
+    label: 'Generate CLAUDE.md',
+    description:
+      'Auto-generate a CLAUDE.md from your AL project structure. Edit it to add your id range, object prefix, and extension safety rules so every session starts with the right context.'
+  },
+  {
+    command: '/model opus',
+    label: 'Switch to Opus',
+    description:
+      'Use Claude Opus for posting logic, permissions, upgrade codeunits, and any AL change that could affect financial data or live operations where deeper reasoning matters.'
+  },
+  {
+    command: '/compact',
+    label: 'Compact session',
+    description:
+      'Summarize long session history to free up context window space during extended AL debugging loops without losing the thread of the current task.'
+  },
+  {
+    command: 'Shift+Tab → Plan mode',
+    label: 'Review before editing',
+    description:
+      'Switch to plan mode to see what Claude Code intends to do before it writes to any AL file. Useful for multi-file extension changes and event subscriber additions.'
+  },
+  {
+    command: 'Esc + Esc',
+    label: 'Undo last edit',
+    description:
+      'Revert the last file change and return to the previous checkpoint instantly. No git reset needed — ideal for catching a wrong edit mid-session.'
+  }
+];
+
 export const categories = [
   {
     name: 'Autonomous Coding Agent',
