@@ -14,10 +14,10 @@ const SITE_URL = 'https://bcforge-ai.netlify.app';
 const SITE_NAME = 'BCDevAI';
 
 const NEW_SLUGS = new Set([
+  '/blog/claude-code-business-central-al',
   '/blog/build-bc-copilot-extension',
   '/blog/al-build-pipeline-ai-code-review',
-  '/blog/ai-audit-deprecated-al-code-bc-upgrade',
-  '/blog/ai-generated-al-test-codeunits',
+  '/blog/prompt-engineering-business-central-al',
 ]);
 
 // ── Head helpers ──────────────────────────────────────────────────────────────
