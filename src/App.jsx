@@ -127,6 +127,9 @@ function ArticleCard({ article, isNew = false }) {
       <div className="mb-4 flex items-center justify-between gap-3 text-sm text-slate-500">
         <div className="flex items-center gap-2">
           <span>{article.read}</span>
+          {article.date && (
+            <span>· {new Date(article.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+          )}
           {isNew && (
             <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
               New
@@ -592,6 +595,11 @@ function ArticlePage({ article }) {
           <div className="mb-5 flex flex-wrap items-center gap-3 text-sm">
             <span className="rounded-full bg-cyan-50 px-3 py-1 text-cyan-800">{article.category}</span>
             <span className="rounded-full bg-white px-3 py-1 text-slate-700 shadow-sm">{article.read}</span>
+            {article.date && (
+              <span className="text-slate-500">
+                {new Date(article.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+              </span>
+            )}
             {NEW_SLUGS.has(article.slug) && (
               <span className="rounded-full bg-emerald-100 px-3 py-1 font-semibold text-emerald-700">New</span>
             )}

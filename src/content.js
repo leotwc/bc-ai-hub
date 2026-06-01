@@ -3,6 +3,7 @@ export const articles = [
     title: 'Create Extension with Codex',
     slug: '/blog/create-extension-with-codex',
     read: '14 min read',
+    date: '2024-11-15',
     category: 'Autonomous Coding Agent',
     description:
       'Learn how Codex can help Business Central extension development and which AL skills you still need.',
@@ -77,6 +78,7 @@ export const articles = [
     title: 'GitHub Copilot for Business Central AL Development',
     slug: '/blog/github-copilot-business-central-al',
     read: '8 min read',
+    date: '2024-11-22',
     category: 'IDE Coding Assistant',
     description:
       'Use GitHub Copilot inside Visual Studio Code to speed up AL object drafting, comments, and small refactors.',
@@ -117,6 +119,7 @@ export const articles = [
     title: 'ChatGPT as a Business Central Solution Design Agent',
     slug: '/blog/chatgpt-business-central-solution-design',
     read: '9 min read',
+    date: '2024-12-06',
     category: 'Design and Prompt Agent',
     description:
       'Use ChatGPT to plan Business Central extension design before writing AL code.',
@@ -157,6 +160,7 @@ export const articles = [
     title: 'Cursor and Windsurf for Business Central Codebase Navigation',
     slug: '/blog/cursor-windsurf-business-central',
     read: '7 min read',
+    date: '2024-12-13',
     category: 'Codebase Navigation Agent',
     description:
       'Use AI-first editors to navigate AL projects, understand dependencies, and make multi-file changes.',
@@ -197,6 +201,7 @@ export const articles = [
     title: 'Claude for AL Code Review and Business Central Documentation',
     slug: '/blog/claude-al-code-review-documentation',
     read: '8 min read',
+    date: '2025-01-10',
     category: 'Review and Documentation Agent',
     description:
       'Use AI review agents to check AL code, explain decisions, and produce implementation documentation.',
@@ -237,6 +242,7 @@ export const articles = [
     title: 'Custom Business Central Coding Agents',
     slug: '/blog/custom-business-central-coding-agent',
     read: '10 min read',
+    date: '2025-01-24',
     category: 'Custom ERP Agent',
     description:
       'Design a custom AI coding agent that understands your Business Central project standards.',
@@ -278,6 +284,7 @@ export const articles = [
     title: 'Enable MCP Server for Business Central AL Troubleshooting',
     slug: '/blog/bc-mcp-server-al-troubleshooting',
     read: '10 min read',
+    date: '2026-04-10',
     category: 'Custom ERP Agent',
     description:
       'Set up the Business Central MCP Server for AL and connect AI coding agents directly to compiler diagnostics in your development workflow.',
@@ -336,6 +343,7 @@ export const articles = [
     title: 'Business Central Expense Agent — What Developers Need to Know',
     slug: '/blog/business-central-expense-agent',
     read: '9 min read',
+    date: '2026-04-17',
     category: 'Autonomous Coding Agent',
     description:
       'Understand what the Business Central Expense Agent does, how it evolves through 2026, and what AL developers should know before extending Expense Management.',
@@ -395,6 +403,7 @@ export const articles = [
     title: 'Migrating Business Central Integrations Away from API v1.0',
     slug: '/blog/migrate-business-central-api-v1',
     read: '11 min read',
+    date: '2026-04-24',
     category: 'Design and Prompt Agent',
     description:
       'API v1.0 was removed in Business Central 2026 Wave 1. Use AI agents to audit your integrations, map replacements in API v2.0, and plan a safe migration.',
@@ -449,6 +458,7 @@ export const articles = [
     title: 'Planning for Business Central SOAP Web Services Removal',
     slug: '/blog/business-central-soap-removal-planning',
     read: '8 min read',
+    date: '2026-05-01',
     category: 'Codebase Navigation Agent',
     description:
       'SOAP web services for Microsoft UI pages are scheduled for removal in Business Central 2026 Wave 2. Use codebase agents to audit, plan, and replace affected integrations.',
@@ -503,6 +513,7 @@ export const articles = [
     title: 'Claude Code for Business Central AL Development',
     slug: '/blog/claude-code-business-central-al',
     read: '10 min read',
+    date: '2026-05-15',
     category: 'Autonomous Coding Agent',
     description:
       'Use Claude Code, the CLI coding agent from Anthropic, to inspect AL projects, edit multi-file extensions, run build commands, and connect to the Business Central MCP Server for compiler diagnostics.',
@@ -583,6 +594,7 @@ export const articles = [
     title: 'GitHub Copilot Workspace for Business Central Extension Planning',
     slug: '/blog/copilot-workspace-bc-extension-planning',
     read: '7 min read',
+    date: '2026-05-16',
     category: 'IDE Coding Assistant',
     description:
       'Use GitHub Copilot Workspace to turn a Business Central feature request into a scoped AL implementation plan before writing any code.',
@@ -635,6 +647,7 @@ export const articles = [
     title: 'AI-Generated AL Test Codeunits for Business Central',
     slug: '/blog/ai-generated-al-test-codeunits',
     read: '9 min read',
+    date: '2026-05-19',
     category: 'Review and Documentation Agent',
     description:
       'Use AI review agents to draft Business Central AL test codeunits: scenario coverage, handler functions, library references, and sandbox validation patterns.',
@@ -693,6 +706,7 @@ export const articles = [
     title: 'Prompt Engineering for Business Central AL Developers',
     slug: '/blog/prompt-engineering-business-central-al',
     read: '10 min read',
+    date: '2026-05-20',
     category: 'Design and Prompt Agent',
     description:
       'Write better AI prompts for Business Central AL tasks: name objects precisely, describe business rules clearly, scope changes safely, and avoid common mistakes.',
@@ -751,6 +765,7 @@ export const articles = [
     title: 'Using AI to Audit Deprecated AL Code Before a Business Central Upgrade',
     slug: '/blog/ai-audit-deprecated-al-code-bc-upgrade',
     read: '8 min read',
+    date: '2026-05-22',
     category: 'Codebase Navigation Agent',
     description:
       'Use codebase navigation agents to find deprecated objects, removed APIs, and upgrade-risk patterns across your AL project before a Business Central version upgrade.',
@@ -807,6 +822,7 @@ export const articles = [
     title: 'AL Build Pipeline with AI Code Review',
     slug: '/blog/al-build-pipeline-ai-code-review',
     read: '11 min read',
+    date: '2026-05-26',
     category: 'Custom ERP Agent',
     description:
       'Add an AI review step to your Business Central AL build pipeline to catch object id conflicts, caption gaps, DataClassification issues, and upgrade risks before code is merged.',
@@ -861,6 +877,7 @@ export const articles = [
     title: 'Build Your Own Business Central Copilot Extension',
     slug: '/blog/build-bc-copilot-extension',
     read: '12 min read',
+    date: '2026-05-29',
     category: 'Custom ERP Agent',
     description:
       'Use the Business Central AI platform, generally available in 2026 Wave 1, to build a partner Copilot extension: AL structure, system prompts, grounding patterns, and publishing guidance.',
