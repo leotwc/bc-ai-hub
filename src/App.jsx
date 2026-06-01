@@ -768,7 +768,7 @@ function NotFoundPage() {
 // ── App root ──────────────────────────────────────────────────────────────────
 
 export default function BCAIHub() {
-  const pathname = window.location.pathname;
+  const pathname = window.location.pathname.replace(/\/$/, '') || '/';
   const article = getArticleBySlug(pathname);
   const isHome = pathname === '/' || pathname === '/index.html';
   const isAbout = pathname === '/about';
