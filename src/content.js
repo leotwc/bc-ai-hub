@@ -273,6 +273,231 @@ export const articles = [
       'Encode project rules so prompts stay shorter and safer.',
       'Keep human review and sandbox testing in the workflow.'
     ]
+  },
+  {
+    title: 'Enable MCP Server for Business Central AL Troubleshooting',
+    slug: '/blog/bc-mcp-server-al-troubleshooting',
+    read: '10 min read',
+    category: 'Custom ERP Agent',
+    description:
+      'Set up the Business Central MCP Server for AL and connect AI coding agents directly to compiler diagnostics in your development workflow.',
+    intro:
+      'The Model Context Protocol (MCP) Server for AL is generally available in Business Central 2026 Wave 1 update 28.1. It allows AI coding agents that support MCP — such as Claude, Copilot in agent mode, and compatible tools — to connect directly to Business Central AL compiler diagnostics. Instead of copying error messages manually into a chat window, the agent can read diagnostics through the MCP connection and propose targeted fixes within the same session.',
+    sections: [
+      {
+        heading: 'What the MCP Server for AL does',
+        body:
+          'The MCP Server for AL exposes Business Central AL project diagnostics as a structured data source that MCP-compatible AI agents can query. The agent can read compiler errors, extension conflicts, symbol resolution issues, and object id problems without the developer manually copying output between tools. This shortens the iteration loop between writing AL code and resolving build errors.',
+        bullets: [
+          'Direct compiler diagnostic access for AL projects in Visual Studio Code.',
+          'Symbol and object resolution context available to the connected agent.',
+          'Reduces manual copy-paste between AL compiler output and AI chat.',
+          'Supports MCP-compatible agents including Claude, GitHub Copilot agent mode, and others.'
+        ]
+      },
+      {
+        heading: 'Setting up MCP Server for AL',
+        body:
+          'The MCP Server for AL is enabled through the AL Language extension in Visual Studio Code. Once enabled, configure your MCP-compatible AI client to connect to the server endpoint. The setup requires the AL Language extension version that ships with Business Central 2026 Wave 1 update 28.1 or later.',
+        bullets: [
+          'Update the AL Language extension to a version compatible with Business Central 2026 Wave 1.',
+          'Enable the MCP Server option in the AL extension settings inside VS Code.',
+          'Add the MCP server endpoint to your AI client configuration.',
+          'Verify the connection by asking the agent to read the current diagnostic output.'
+        ]
+      },
+      {
+        heading: 'Using MCP with an AI coding agent',
+        body:
+          'With the MCP connection active, you can ask the agent to read the current build state and propose fixes without providing the error text yourself. The workflow becomes: write code, trigger a build, ask the agent to check diagnostics, review the proposed fix, apply it, and rebuild.',
+        code:
+          'Inspect the current AL project diagnostics through the MCP connection. List all errors and warnings, explain each one in plain language, and propose a minimal targeted fix for each error. Do not modify files yet.'
+      },
+      {
+        heading: 'What MCP does not replace',
+        body:
+          'The MCP Server provides compiler diagnostics, not business process knowledge. The agent still cannot know your functional requirements, posting rules, or approval workflows. You need to guide the agent on what the code should do — MCP only helps it see what the code currently does wrong according to the compiler.',
+        bullets: [
+          'The agent still needs your AL object naming conventions and id ranges.',
+          'Business rules, posting logic, and permission design remain developer responsibilities.',
+          'MCP diagnostic context does not include runtime errors from sandbox testing.',
+          'Always review proposed fixes before applying, especially for event subscribers and posting routines.'
+        ]
+      }
+    ],
+    takeaways: [
+      'MCP Server for AL is generally available in Business Central 2026 Wave 1 update 28.1.',
+      'It lets MCP-compatible agents read AL compiler diagnostics directly without manual copy-paste.',
+      'Setup requires the updated AL Language extension and an MCP-compatible AI client.',
+      'MCP reduces error-copy friction but does not replace developer knowledge of business process.'
+    ]
+  },
+  {
+    title: 'Business Central Expense Agent — What Developers Need to Know',
+    slug: '/blog/business-central-expense-agent',
+    read: '9 min read',
+    category: 'Autonomous Coding Agent',
+    description:
+      'Understand what the Business Central Expense Agent does, how it evolves through 2026, and what AL developers should know before extending Expense Management.',
+    intro:
+      'The Expense Agent is the first fully autonomous AI agent shipped inside Business Central. Introduced in public preview with the 2026 Wave 1 release, it handles expense extraction from receipts, duplicate detection, report generation, approval workflow routing, and reimbursement posting — all within the standard Expense Management module. For AL developers, this means a new extensible AI workflow with significant new capabilities planned for July 2026.',
+    sections: [
+      {
+        heading: 'What the Expense Agent does today',
+        body:
+          'In its current preview form, the Expense Agent can extract expense data from uploaded receipt images, detect duplicate submissions, generate expense reports, route them through the existing approval workflow, and post reimbursements. It works inside the standard Business Central Expense Management module without requiring custom AL code to activate.',
+        bullets: [
+          'Receipt image extraction using AI document intelligence.',
+          'Duplicate expense detection across the submission period.',
+          'Automatic expense report generation from extracted line data.',
+          'Integration with existing Business Central approval workflows.',
+          'Reimbursement posting through the Expense Management posting routine.'
+        ]
+      },
+      {
+        heading: 'What is coming in July 2026',
+        body:
+          'Microsoft has announced several Expense Agent capabilities scheduled for public preview in July 2026. These include approval process enhancements, mobile app capture, travel requisition management, and localization support for German, Danish, French, and Spanish. AL developers working on expense extensions should plan for these additions.',
+        bullets: [
+          'Full approval process support for the Expense Agent workflow.',
+          'Mobile app expense capture using the Expense Agent.',
+          'Travel requisition management integrated with the agent.',
+          'Localization in German, Danish, French, and Spanish.'
+        ]
+      },
+      {
+        heading: 'What AL developers should check before extending Expense Management',
+        body:
+          'Before writing AL extensions that touch the Expense Management module, review the agent\'s expected event flow. The Expense Agent introduces new posting paths and approval states that an extension may need to handle. Adding fields to expense tables or modifying approval logic without understanding the agent flow can cause duplicates, incomplete approvals, or posting failures.',
+        code:
+          'Before extending Business Central Expense Management tables or pages, inspect which events the Expense Agent subscribes to. List any OnBefore or OnAfter posting events in the expense codeunits, identify fields the agent reads for duplicate detection, and explain which approval workflow states the agent can modify. Do not edit files yet.'
+      },
+      {
+        heading: 'Safe extension patterns for Expense Management',
+        body:
+          'Follow the same AL extension safety rules that apply to any posting module: use event subscribers instead of modifying base objects, avoid hardcoded dimensions or approval codes, and test with both manual and agent-initiated expense flows in your sandbox.',
+        bullets: [
+          'Use event subscribers to add logic to expense posting, not base codeunit changes.',
+          'Test extensions with both manually submitted and agent-submitted expense reports.',
+          'Avoid hardcoded company, dimension, or approval values in expense extensions.',
+          'Review DataClassification on any new fields added to expense or employee tables.'
+        ]
+      }
+    ],
+    takeaways: [
+      'The Business Central Expense Agent is in public preview as of 2026 Wave 1.',
+      'It covers receipt extraction, duplicate detection, approval routing, and reimbursement posting.',
+      'Significant new capabilities are scheduled for July 2026.',
+      'AL developers extending Expense Management should map the agent event flow before writing code.'
+    ]
+  },
+  {
+    title: 'Migrating Business Central Integrations Away from API v1.0',
+    slug: '/blog/migrate-business-central-api-v1',
+    read: '11 min read',
+    category: 'Design and Prompt Agent',
+    description:
+      'API v1.0 was removed in Business Central 2026 Wave 1. Use AI agents to audit your integrations, map replacements in API v2.0, and plan a safe migration.',
+    intro:
+      'Microsoft removed Business Central API v1.0 in 2026 release wave 1. Integrations that still call v1.0 endpoints will fail. The affected endpoints cover standard entities such as customers, vendors, items, sales orders, purchase orders, and journal entries. If your team has external systems, Power Automate flows, or custom connectors that use the v1.0 base path, a migration to v2.0 or a custom API page is required now.',
+    sections: [
+      {
+        heading: 'What changed between API v1.0 and v2.0',
+        body:
+          'API v2.0 uses the same OData v4 structure but reorganizes several entity and field names for consistency. Some entities from v1.0 have direct v2.0 equivalents, others were merged, renamed, or require a custom API page for the same coverage. The migration is not a drop-in URL replacement — each endpoint must be reviewed individually.',
+        bullets: [
+          'Base URL change: /api/v1.0/ must be updated to /api/v2.0/ or a versioned custom endpoint.',
+          'Entity names and field names may differ between versions.',
+          'Some v1.0 entities have no direct v2.0 equivalent and need custom AL API pages.',
+          'v2.0 returns different field structures for financial line entities.'
+        ]
+      },
+      {
+        heading: 'Step 1: Audit your existing v1.0 calls with an AI agent',
+        body:
+          'Before writing any replacement code, use an AI design agent to inventory every place in your codebase or integration platform that references the v1.0 API path. This gives you a complete list of endpoints and expected response fields to map.',
+        code:
+          'Act as a Business Central integration consultant. I have an integration that calls Business Central API v1.0. List every standard entity endpoint in v1.0 that has a known v2.0 equivalent. For each entity, note the v2.0 entity name, any field name changes, and whether the entity exists as-is or requires a custom API page. Output as a reference table.'
+      },
+      {
+        heading: 'Step 2: Map each endpoint to a v2.0 replacement',
+        body:
+          'For each v1.0 endpoint your integration uses, identify the v2.0 equivalent or plan a custom API page. Custom API pages in AL follow a specific structure and can expose any Business Central table. If your integration uses a non-standard entity or a v1.0 field that does not exist in v2.0, a custom API page is the safest path.',
+        code:
+          'My integration calls the Business Central API v1.0 salesOrders endpoint. Compare the v1.0 and v2.0 salesOrders entity field lists, identify fields removed or renamed in v2.0, and draft a migration checklist. If any needed field is missing from v2.0, propose a custom API page in AL that exposes those fields safely.'
+      },
+      {
+        heading: 'Step 3: Test the migration in a sandbox',
+        body:
+          'After updating endpoint URLs and field mappings, publish any new custom API pages to a Business Central sandbox and test the full integration flow. Pay particular attention to filter syntax, expand clauses, and authentication token scopes, which may differ between the versions.',
+        bullets: [
+          'Test OData filter expressions — v2.0 may reject some v1.0 filter syntax.',
+          'Verify expand clauses for related entities such as salesOrderLines on salesOrders.',
+          'Re-test OAuth 2.0 scopes — some v2.0 endpoints require updated API scope declarations.',
+          'Check pagination behavior, as default page size may differ between versions.'
+        ]
+      }
+    ],
+    takeaways: [
+      'API v1.0 was removed in Business Central 2026 Wave 1 — all v1.0 calls will fail.',
+      'Audit every v1.0 endpoint reference before writing replacement code.',
+      'Many entities have direct v2.0 equivalents; some require custom AL API pages.',
+      'Test filter syntax, expand clauses, and OAuth scopes in a sandbox before going live.'
+    ]
+  },
+  {
+    title: 'Planning for Business Central SOAP Web Services Removal',
+    slug: '/blog/business-central-soap-removal-planning',
+    read: '8 min read',
+    category: 'Codebase Navigation Agent',
+    description:
+      'SOAP web services for Microsoft UI pages are scheduled for removal in Business Central 2026 Wave 2. Use codebase agents to audit, plan, and replace affected integrations.',
+    intro:
+      'Microsoft has announced that SOAP web services for Business Central UI pages will be removed in 2026 release wave 2. If your team has integrations, middleware, or legacy connectors that call Business Central through SOAP, the planning window is now. Codebase navigation agents are well suited for this audit because SOAP references can be scattered across middleware projects, mapping configurations, and legacy AL code.',
+    sections: [
+      {
+        heading: 'What is being removed and when',
+        body:
+          'The removal applies to SOAP web services built on Microsoft UI pages in Business Central. This covers standard page-based SOAP endpoints and any custom SOAP web services published through the Business Central service tier. The scheduled removal is 2026 release wave 2. OData v4 web services and API pages are not affected.',
+        bullets: [
+          'SOAP endpoints for Microsoft UI pages: removed in 2026 Wave 2.',
+          'Custom AL SOAP web services published on pages: also removed in Wave 2.',
+          'OData v4 web services and custom API pages: not affected by this removal.',
+          'Data-defined permission sets: also scheduled for removal in 2026 Wave 2.'
+        ]
+      },
+      {
+        heading: 'Step 1: Use a codebase agent to find all SOAP references',
+        body:
+          'Before planning replacements, get a full picture of where SOAP is used. A codebase navigation agent can search across your AL projects, middleware code, and configuration files for SOAP endpoint patterns. This is a read-only inspection task — instruct the agent not to edit files until the audit is complete.',
+        code:
+          'Search this codebase for all references to Business Central SOAP web services. Find SOAP endpoint URLs, WSDL imports, service references, and any AL page objects published as SOAP services. List each reference with the file path and line number. Do not edit any files.'
+      },
+      {
+        heading: 'Step 2: Map each SOAP endpoint to an OData or API replacement',
+        body:
+          'For each SOAP endpoint found, decide whether the replacement is a standard OData endpoint, an existing API v2.0 page, or a new custom API page in AL. SOAP endpoints often expose full page actions including posting functions. Some of these actions have no direct OData equivalent and will require a custom AL API page with explicit action procedures.',
+        bullets: [
+          'Read-only SOAP calls: usually replaceable with OData v4 or API v2.0 queries.',
+          'Posting or action SOAP calls: may need a custom AL API page with action procedures.',
+          'WSDL-generated proxies: require regeneration or full replacement with OData client code.',
+          'Middleware SOAP clients: assess whether the middleware supports OData or needs updating.'
+        ]
+      },
+      {
+        heading: 'Step 3: Plan the replacement timeline',
+        body:
+          'With an audit list and replacement map in hand, prioritize by integration risk. Posting integrations and financial imports carry the highest risk. Document each replacement, test in a sandbox, and coordinate the go-live before the Wave 2 cutover.',
+        code:
+          'Based on this list of SOAP endpoints, create a migration plan. Group by risk level: posting or financial, read-only query, and configuration. For each group, suggest the safest OData or API v2.0 replacement approach and list sandbox test cases. Flag any endpoint that has no standard replacement and needs a custom AL API page.'
+      }
+    ],
+    takeaways: [
+      'SOAP web services for Business Central UI pages are removed in 2026 Wave 2.',
+      'Use a codebase agent to audit all SOAP references before planning replacements.',
+      'Most read-only SOAP calls can move to OData v4 or API v2.0.',
+      'Posting and action SOAP calls may need new custom AL API pages.'
+    ]
   }
 ];
 
@@ -284,16 +509,16 @@ export const snippets = [
     slug: '/blog/create-extension-with-codex'
   },
   {
-    title: 'Copilot in VS Code',
-    category: 'IDE Coding Assistant',
-    desc: 'Use inline AI help for Business Central AL objects and refactors.',
-    slug: '/blog/github-copilot-business-central-al'
+    title: 'MCP Server for AL',
+    category: 'Custom ERP Agent',
+    desc: 'Connect AI agents directly to BC compiler diagnostics via MCP in update 28.1.',
+    slug: '/blog/bc-mcp-server-al-troubleshooting'
   },
   {
-    title: 'Custom BC Coding Agent',
-    category: 'Custom ERP Agent',
-    desc: 'Define project rules for repeatable AL agent workflows.',
-    slug: '/blog/custom-business-central-coding-agent'
+    title: 'API v1.0 Migration',
+    category: 'Design and Prompt Agent',
+    desc: 'API v1.0 removed in 2026 Wave 1 — use AI agents to plan and execute the move to v2.0.',
+    slug: '/blog/migrate-business-central-api-v1'
   }
 ];
 
@@ -357,7 +582,7 @@ export const categories = [
   {
     name: 'Autonomous Coding Agent',
     description: 'Agents that inspect a repository, edit AL files, run checks, and explain the change.',
-    count: 1
+    count: 2
   },
   {
     name: 'IDE Coding Assistant',
@@ -367,12 +592,12 @@ export const categories = [
   {
     name: 'Design and Prompt Agent',
     description: 'Agents that turn Business Central requests into requirements, prompts, risks, and tests.',
-    count: 1
+    count: 2
   },
   {
     name: 'Codebase Navigation Agent',
     description: 'AI-first editors that map AL objects, dependencies, and multi-file feature changes.',
-    count: 1
+    count: 2
   },
   {
     name: 'Review and Documentation Agent',
@@ -382,7 +607,7 @@ export const categories = [
   {
     name: 'Custom ERP Agent',
     description: 'Team-specific agents that follow your AL standards, id ranges, naming rules, and release checks.',
-    count: 1
+    count: 2
   }
 ];
 
@@ -391,7 +616,7 @@ export const releaseChangelog = {
   title: 'Business Central 2026 Wave 1 Changelog',
   description:
     'A Microsoft-sourced snapshot for update 28.1 and the 2026 release wave 1 plan. Use it to see what is newly available, what is planned, what is removed, and what is scheduled for removal.',
-  verifiedDate: 'Verified May 29, 2026',
+  verifiedDate: 'Verified June 1, 2026',
   currentRelease: 'Update 28.1 for Microsoft Dynamics 365 Business Central 2026 release wave 1',
   groups: [
     {
@@ -400,20 +625,20 @@ export const releaseChangelog = {
       items: [
         'Update 28.1 is the current Microsoft Learn release note page for Business Central 2026 release wave 1, last updated May 8, 2026.',
         'Expense Agent is introduced in preview, with expense extraction, duplicate detection, report generation, approval workflow support, and reimbursement posting through the Expense Management module.',
-        'Enable Troubleshooting MCP Server for AL is listed as generally available in update 28.1.',
+        'Enable Troubleshooting MCP Server for AL is listed as generally available in update 28.1, allowing MCP-compatible AI agents to connect to AL compiler diagnostics directly.',
         'Audit user and group permissions across apps is listed as generally available in update 28.1.',
-        'Control the lifecycle of report layouts, enhanced reports for deferrals and trial balances, and new APIs for approval-workflow and permission analysis are listed in update 28.1 feature changes.'
+        'Control the lifecycle of report layouts, enhanced reports for deferrals and trial balances, and new APIs for approval-workflow and permission analysis are listed in update 28.1 feature changes.',
+        'Use AI resources for Copilot extensions is listed as generally available, enabling partners to use the Business Central AI platform in their own Copilot extensions.'
       ]
     },
     {
       label: 'Pending to be added',
       tone: 'blue',
       items: [
-        'Expense Agent approval process is listed for public preview in July 2026.',
+        'Expense Agent approval process enhancements are listed for public preview in July 2026.',
         'Capture expenses with Expense Agent on the mobile app is listed for public preview in July 2026.',
         'Manage travel requisitions with Expense Agent is listed for public preview in July 2026.',
         'Use Expense Agent in German, Danish, French, and Spanish is listed for public preview in July 2026.',
-        'Use AI resources for Copilot extensions is listed for general availability in September 2026.',
         'Several governance, localization, financial, reporting, and e-document features remain scheduled through June, July, September, and October 2026. Microsoft notes that planned timelines may change.'
       ]
     },
@@ -421,8 +646,8 @@ export const releaseChangelog = {
       label: 'Removed',
       tone: 'rose',
       items: [
+        'API v1.0 is removed in 2026 release wave 1. All integrations calling /api/v1.0/ endpoints must migrate to v2.0 or custom API pages immediately.',
         'Excel reports embedded on role centers are removed in 2026 release wave 1.',
-        'API v1.0 is removed in 2026 release wave 1. Integrations should use supported newer API versions.',
         'Legacy Power BI apps are removed in 2026 release wave 1.',
         'Intelligent Cloud Insights is removed in 2026 release wave 1.',
         'Legacy reports scheduled for deprecation are removed in 2026 release wave 1.'
@@ -432,7 +657,7 @@ export const releaseChangelog = {
       label: 'Pending removed',
       tone: 'amber',
       items: [
-        'SOAP web services for Microsoft UI pages are scheduled for removal in 2026 release wave 2.',
+        'SOAP web services for Microsoft UI pages are scheduled for removal in 2026 release wave 2. Begin auditing and replacing SOAP integrations now.',
         'Data-defined permission sets are scheduled for removal in 2026 release wave 2.',
         'OData web services for Microsoft UI pages are scheduled for removal in 2027 release wave 1.',
         'AMC Banking Fundamentals extension, including AMC Banking 365 Fundamentals, is scheduled for removal in 2027 release wave 1.',
@@ -500,6 +725,21 @@ export const faqs = [
     question: 'Can I use AI agents to help migrate from older Business Central versions or NAV?',
     answer:
       'Yes, AI agents can help analyze deprecated objects, suggest replacements for removed APIs such as API v1.0 removed in 2026 Wave 1, and draft replacement extension objects. Use a review agent to audit deprecated features in your codebase against the current removal list, then use a coding agent to propose the updated AL objects.'
+  },
+  {
+    question: 'What is the Business Central MCP Server for AL and how does it help developers?',
+    answer:
+      'The MCP Server for AL, generally available in Business Central 2026 Wave 1 update 28.1, exposes AL compiler diagnostics as a structured data source that MCP-compatible AI agents can query. Instead of copying error messages manually, the agent reads diagnostics directly and proposes targeted fixes. It works with Claude, GitHub Copilot in agent mode, and other MCP-compatible clients.'
+  },
+  {
+    question: 'Is Business Central API v1.0 still available?',
+    answer:
+      'No. API v1.0 was removed in Business Central 2026 release wave 1. Any integration calling endpoints under /api/v1.0/ will fail. Migrate to API v2.0 or create custom API pages in AL. Use an AI design agent to audit your current v1.0 calls and map each one to a v2.0 equivalent before updating your integration code.'
+  },
+  {
+    question: 'When will SOAP web services be removed from Business Central?',
+    answer:
+      'SOAP web services for Microsoft UI pages are scheduled for removal in Business Central 2026 release wave 2. OData v4 and API pages are not affected. Start auditing SOAP-dependent integrations now using a codebase navigation agent to find all SOAP endpoint references, then plan replacements using OData v4 or custom AL API pages.'
   }
 ];
 
