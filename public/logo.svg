@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 230 50" fill="none" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="iconBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0e7490"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="aiGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon box -->
+  <rect y="1" width="48" height="48" rx="10" fill="url(#iconBg)"/>
+  <rect x="1.5" y="2.5" width="45" height="45" rx="8.5" fill="none" stroke="#22d3ee" stroke-width="1" opacity="0.35"/>
+
+  <!-- B: stem -->
+  <rect x="8" y="13" width="3" height="24" rx="1" fill="white"/>
+  <!-- B: upper bump -->
+  <path d="M11 13 H18.5 C23.5 13 23.5 25 18.5 25 H11 Z" fill="white"/>
+  <!-- B: lower bump -->
+  <path d="M11 25 H19.5 C26 25 26 37 19.5 37 H11 Z" fill="white"/>
+
+  <!-- C: 270-degree arc opening right -->
+  <path d="M38 19 A7.5 7.5 0 1 0 38 31" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Wordmark: "BC" in cyan -->
+  <text
+    x="62" y="35"
+    font-family="system-ui, -apple-system, 'Segoe UI', Arial, sans-serif"
+    font-weight="800"
+    font-size="26"
+    fill="#06b6d4"
+    letter-spacing="-0.5"
+  >BC</text>
+
+  <!-- Wordmark: "Dev" in dark slate -->
+  <text
+    x="93" y="35"
+    font-family="system-ui, -apple-system, 'Segoe UI', Arial, sans-serif"
+    font-weight="600"
+    font-size="26"
+    fill="#1e293b"
+    letter-spacing="-0.3"
+  >Dev</text>
+
+  <!-- Wordmark: "AI" in cyan gradient via fill -->
+  <text
+    x="145" y="35"
+    font-family="system-ui, -apple-system, 'Segoe UI', Arial, sans-serif"
+    font-weight="800"
+    font-size="26"
+    fill="url(#aiGrad)"
+    letter-spacing="-0.5"
+  >AI</text>
+
+  <!-- Tagline (optional, small) -->
+  <text
+    x="62" y="46"
+    font-family="system-ui, -apple-system, 'Segoe UI', Arial, sans-serif"
+    font-size="9"
+    fill="#64748b"
+    letter-spacing="0.5"
+  >BUSINESS CENTRAL AI AGENTS</text>
+</svg>

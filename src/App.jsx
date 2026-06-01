@@ -62,8 +62,11 @@ function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
-        <a className="text-lg font-bold text-slate-950 hover:text-cyan-700" href="/">
-          {SITE_NAME}
+        <a className="flex items-center gap-2.5 hover:opacity-90 transition-opacity" href="/">
+          <img src="/favicon.svg" alt="BCDevAI" className="h-8 w-8 rounded-lg" />
+          <span className="text-lg font-bold tracking-tight">
+            <span className="text-cyan-600">BC</span><span className="text-slate-800">DevAI</span>
+          </span>
         </a>
 
         <nav className="hidden items-center gap-5 text-sm font-medium text-slate-600 md:flex">
