@@ -627,8 +627,8 @@ function AboutPage() {
           <p className="leading-relaxed text-slate-700">
             For questions, corrections, or feedback about any article or guide on this site, reach out
             by email:{' '}
-            <a className="font-medium text-cyan-800 hover:underline" href="mailto:wctan@dynamicbiz.com.my">
-              wctan@dynamicbiz.com.my
+            <a className="font-medium text-cyan-800 hover:underline" href="mailto:leotwc@hotmail.my">
+              leotwc@hotmail.my
             </a>
           </p>
         </section>
@@ -759,8 +759,8 @@ function PrivacyPolicyPage() {
           <h2 className="mb-4 text-2xl font-bold text-slate-950">Contact</h2>
           <p className="leading-relaxed">
             For privacy-related questions, contact:{' '}
-            <a className="font-medium text-cyan-800 hover:underline" href="mailto:wctan@dynamicbiz.com.my">
-              wctan@dynamicbiz.com.my
+            <a className="font-medium text-cyan-800 hover:underline" href="mailto:leotwc@hotmail.my">
+              leotwc@hotmail.my
             </a>
           </p>
         </section>
