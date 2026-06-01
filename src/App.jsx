@@ -56,6 +56,10 @@ function setJsonLd(data) {
   el.textContent = JSON.stringify(data);
 }
 
+function tocId(heading) {
+  return heading.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
 // ── Shared components ─────────────────────────────────────────────────────────
 
 function Header() {
@@ -303,8 +307,8 @@ function HomePage() {
               Choose the Right AI Coding Agent for Business Central
             </h1>
             <p className="mb-8 max-w-2xl text-lg leading-relaxed text-slate-600">
-              Compare Codex, Copilot, ChatGPT, codebase agents, review agents, and custom ERP
-              agents for Dynamics 365 Business Central AL extension development.
+              Compare Codex, Claude Code, Copilot, ChatGPT, codebase agents, review agents, and
+              custom ERP agents for Dynamics 365 Business Central AL extension development.
             </p>
             <div className="flex flex-wrap gap-4">
               <a
@@ -565,6 +569,8 @@ function HomePage() {
 
 function ArticlePage({ article }) {
   const relatedArticles = getRelatedArticles(article.slug, article.category);
+  const [showTop, setShowTop] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     document.title = `${article.title} | ${SITE_NAME}`;
@@ -573,6 +579,11 @@ function ArticlePage({ article }) {
     setMeta('og:description', article.description, true);
     setMeta('og:url', `${SITE_URL}${article.slug}`, true);
     setMeta('og:type', 'article', true);
+    setMeta('og:image', `${SITE_URL}/og-image.svg`, true);
+    setMeta('twitter:card', 'summary_large_image');
+    setMeta('twitter:title', `${article.title} | ${SITE_NAME}`);
+    setMeta('twitter:description', article.description);
+    setMeta('twitter:image', `${SITE_URL}/og-image.svg`);
     setCanonical(article.slug);
     setJsonLd({
       '@context': 'https://schema.org',
@@ -584,6 +595,12 @@ function ArticlePage({ article }) {
       articleSection: article.category,
     });
   }, [article]);
+
+  useEffect(() => {
+    const onScroll = () => setShowTop(window.scrollY > 300);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
     <main>
@@ -610,12 +627,27 @@ function ArticlePage({ article }) {
       </section>
 
       <article className="mx-auto max-w-4xl px-6 py-14">
+        {article.sections.length >= 4 && (
+          <nav className="mb-10 rounded-lg border border-slate-200 bg-slate-50 p-5">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">On this page</p>
+            <ol className="space-y-1.5">
+              {article.sections.map((section) => (
+                <li key={section.heading}>
+                  <a href={`#${tocId(section.heading)}`} className="text-sm text-slate-600 hover:text-cyan-700 hover:underline">
+                    {section.heading}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+
         <p className="mb-10 text-lg leading-8 text-slate-700">{article.intro}</p>
 
         <div className="space-y-10">
           {article.sections.map((section) => (
             <section key={section.heading}>
-              <h2 className="mb-4 text-2xl font-bold text-slate-950">{section.heading}</h2>
+              <h2 id={tocId(section.heading)} className="mb-4 scroll-mt-24 text-2xl font-bold text-slate-950">{section.heading}</h2>
               <p className="leading-8 text-slate-700">{section.body}</p>
               {section.bullets && (
                 <ul className="mt-4 space-y-3 text-slate-700">
@@ -643,6 +675,28 @@ function ArticlePage({ article }) {
             ))}
           </ul>
         </div>
+
+        <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-slate-200 pt-8">
+          <span className="text-sm font-semibold text-slate-500">Share this guide:</span>
+          <a
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${SITE_URL}${article.slug}`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
+          >
+            Share on LinkedIn
+          </a>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(`${SITE_URL}${article.slug}`);
+              setCopied(true);
+              setTimeout(() => setCopied(false), 2000);
+            }}
+            className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
+          >
+            {copied ? 'Link copied!' : 'Copy link'}
+          </button>
+        </div>
       </article>
 
       <section className="border-t border-slate-200 bg-white px-6 py-14">
@@ -658,6 +712,16 @@ function ArticlePage({ article }) {
           </div>
         </div>
       </section>
+
+      {showTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-8 right-8 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-cyan-700 text-white shadow-lg shadow-cyan-900/30 transition hover:bg-cyan-800"
+          aria-label="Back to top"
+        >
+          ↑
+        </button>
+      )}
     </main>
   );
 }

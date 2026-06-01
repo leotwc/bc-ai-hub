@@ -47,6 +47,14 @@ function renderPage(html, { title, description, url }) {
     .replace(
       /<meta property="og:url" content="[^"]*" \/>/,
       `<meta property="og:url" content="${u}" />`
+    )
+    .replace(
+      /<meta name="twitter:title" content="[^"]*" \/>/,
+      `<meta name="twitter:title" content="${t}" />`
+    )
+    .replace(
+      /<meta name="twitter:description" content="[^"]*" \/>/,
+      `<meta name="twitter:description" content="${d}" />`
     );
 }
 
