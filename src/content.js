@@ -498,6 +498,353 @@ export const articles = [
       'Most read-only SOAP calls can move to OData v4 or API v2.0.',
       'Posting and action SOAP calls may need new custom AL API pages.'
     ]
+  },
+  {
+    title: 'GitHub Copilot Workspace for Business Central Extension Planning',
+    slug: '/blog/copilot-workspace-bc-extension-planning',
+    read: '7 min read',
+    category: 'IDE Coding Assistant',
+    description:
+      'Use GitHub Copilot Workspace to turn a Business Central feature request into a scoped AL implementation plan before writing any code.',
+    intro:
+      'GitHub Copilot Workspace takes a feature request or GitHub issue and produces a step-by-step implementation plan before generating any code. For Business Central developers, this planning step is useful because it surfaces object dependencies, extension design decisions, and risk areas early — before a coding agent starts editing AL files. Reviewing the plan before accepting the code changes reduces rework and keeps extensions aligned with your project standards.',
+    sections: [
+      {
+        heading: 'How Copilot Workspace differs from Copilot Chat',
+        body:
+          'Copilot Chat completes code inline and answers questions in the editor. Copilot Workspace starts from a task description — a GitHub issue, a text prompt, or a branch diff — and generates a structured plan: what files to change, what objects to create, what risks to note, and what tests to consider. You review and edit the plan before any code is written. For Business Central extensions, this matters because the wrong object design is more expensive to fix than the wrong line of code.',
+        bullets: [
+          'Copilot Chat: inline code completions and contextual answers inside VS Code.',
+          'Copilot Workspace: task-level plan generation from a GitHub issue or free-text prompt.',
+          'Workspace lets you edit the plan before code generation begins.',
+          'Useful for extension scope decisions where early AL design mistakes are costly.'
+        ]
+      },
+      {
+        heading: 'Creating a BC extension plan with Copilot Workspace',
+        body:
+          'Open Copilot Workspace from a GitHub issue or start a new session with a task description. Describe the Business Central feature, the affected module, and your constraints: object id range, extension-only requirement, and any existing objects the change must interact with. Copilot Workspace generates a plan listing files to create or modify, with rationale for each decision.',
+        code:
+          'Add a customer AI review flag to Business Central. The extension should add a Boolean field to the Customer table, show it on the Customer Card page, and block sales orders from posting if the flag is set and no review approval exists. Extension-only pattern required — no base object changes. Use the existing Business Central approval workflow where possible.'
+      },
+      {
+        heading: 'Reviewing the plan before accepting code',
+        body:
+          'Before accepting the generated code, review the plan for object type choices, id range compliance, event subscriber placement, and transaction timing. For a posting block, check whether the plan uses the correct OnBeforeReleaseSalesDoc event or a less appropriate trigger. Edit the plan to correct design decisions before generation — this avoids AL compiler errors and posting-flow side effects.',
+        bullets: [
+          'Verify object types match your extension design: table extension, page extension, codeunit, event subscriber.',
+          'Confirm object and field ids fall within your app.json id range.',
+          'Check that posting blocks use event subscribers, not table or page triggers.',
+          'Reject plan steps that suggest modifying standard base codeunits or base pages directly.'
+        ]
+      },
+      {
+        heading: 'Skills needed to use Workspace effectively',
+        body:
+          'Copilot Workspace generates plans based on its understanding of your repository and the task prompt. For Business Central work, you must review the plan with AL design knowledge. A plan that looks structurally correct may subscribe to an event at the wrong transaction point, or create a field without DataClassification. The developer adds the judgment the planner cannot supply.'
+      }
+    ],
+    takeaways: [
+      'Copilot Workspace generates an implementation plan before writing code — review it before accepting.',
+      'Use it for extension scope decisions where early design mistakes are costly.',
+      'Check event subscriber placement, id ranges, and object types in the plan before generation.',
+      'Developer review of the plan catches posting risk and AL design issues faster than reviewing generated code.'
+    ]
+  },
+  {
+    title: 'AI-Generated AL Test Codeunits for Business Central',
+    slug: '/blog/ai-generated-al-test-codeunits',
+    read: '9 min read',
+    category: 'Review and Documentation Agent',
+    description:
+      'Use AI review agents to draft Business Central AL test codeunits: scenario coverage, handler functions, library references, and sandbox validation patterns.',
+    intro:
+      'Writing AL test codeunits is time-consuming but necessary for safe Business Central extension development. AI agents can draft the structure — test functions, handler functions, scenario names, library references, and assertion patterns — faster than writing from scratch. The developer still needs to fill in business-rule assertions and validate tests against real sandbox behavior, but starting from a generated scaffold saves significant setup time.',
+    sections: [
+      {
+        heading: 'What AI can draft for AL tests',
+        body:
+          'A well-prompted AI agent can produce the codeunit skeleton, test function names based on the feature behavior, InitializeSetup helper procedures, handler functions for confirmation dialogs and message boxes, and basic assert patterns. It can also suggest which standard test libraries to use — LibrarySales, LibraryPurchase, LibraryInventory, LibraryERM — and how to initialize required setup records.',
+        bullets: [
+          'Codeunit structure with Subtype = Test and feature-named test functions.',
+          'Handler stubs for ConfirmHandler, MessageHandler, and ModalPageHandler.',
+          'InitializeSetup procedures for customer, vendor, item, and journal setup.',
+          'Basic Assert.AreEqual and Assert.IsFalse patterns for field and posting checks.'
+        ]
+      },
+      {
+        heading: 'What you must write and verify yourself',
+        body:
+          'AI agents do not know your specific business rules, required field values, localization setup, or approval workflow configuration. The generated test functions are structurally sound, but the actual assertions — what value a field should have after posting, which approval entry should exist, whether a posting error fires at the right point — must be written by a developer who understands the intended behavior.',
+        bullets: [
+          'Business-rule assertions: expected field values, approval states, ledger entry amounts.',
+          'Error message text in AssertError blocks — these must match exact BC runtime output.',
+          'Handler function logic: what the test should do when a confirmation dialog appears.',
+          'Sandbox verification: run the test codeunit against a real BC environment, not just confirm compilation.'
+        ]
+      },
+      {
+        heading: 'Prompting for an AL test scaffold',
+        body:
+          'Give the agent the feature being tested, the objects involved, the normal path, and the error path. Ask it to include handler functions and library references explicitly. A specific prompt produces a usable scaffold rather than a generic template.',
+        code:
+          'Write an AL test codeunit for a Business Central extension that blocks sales order posting when a customer has AI Review Required set to true. Include: a test function for the happy path (flag false, posting succeeds), a test function for the blocked path (flag true, posting raises an error), handler functions for confirmation dialogs, InitializeSetup using LibrarySales and LibraryInventory, and Assert patterns for the expected outcomes. Use Subtype = Test and standard BC test library conventions.'
+      },
+      {
+        heading: 'Reviewing AI-generated test code',
+        body:
+          'Review the generated test codeunit against your AL compiler output. Check that library codeunit names match the versions in your app.json dependencies, that handler function signatures are correct for your BC version, and that test function names follow your project naming convention. Then publish to a sandbox and run each test function to verify assertions are correct for your real Business Central environment.',
+        bullets: [
+          'Verify library codeunit names match your BC version and app.json dependencies.',
+          'Check handler function signatures: ConfirmHandler and MessageHandler have fixed signatures in AL.',
+          'Run tests in a real sandbox — compile success does not mean test logic is correct.',
+          'Extend generated tests with your specific business-rule edge cases before merging.'
+        ]
+      }
+    ],
+    takeaways: [
+      'AI agents can draft AL test codeunit structure, handler functions, and library references faster than writing from scratch.',
+      'Business-rule assertions and sandbox validation must be completed by a developer.',
+      'Prompt with the feature, normal path, error path, and handler requirements for a usable scaffold.',
+      'Always run generated tests in a real sandbox — compilation success does not verify test correctness.'
+    ]
+  },
+  {
+    title: 'Prompt Engineering for Business Central AL Developers',
+    slug: '/blog/prompt-engineering-business-central-al',
+    read: '10 min read',
+    category: 'Design and Prompt Agent',
+    description:
+      'Write better AI prompts for Business Central AL tasks: name objects precisely, describe business rules clearly, scope changes safely, and avoid common mistakes.',
+    intro:
+      'A well-written prompt is the difference between an AI agent that drafts safe, extension-compliant AL code and one that modifies base objects, invents field ids, or solves the wrong business problem. Business Central AL has specific constraints — object id ranges, extension safety rules, event subscriber patterns, posting flows — that a generic prompt will not carry. Learning to write prompts that include this context makes every AI agent more productive and safer to use.',
+    sections: [
+      {
+        heading: 'Why generic prompts fail for Business Central',
+        body:
+          'Generic prompts such as "add a field to the customer table" or "fix this AL error" give the agent no object id, no extension boundary, no event context, and no business reason. The result is usually code that compiles but uses an arbitrary id, modifies a base object, or places logic in the wrong trigger. Business Central AL has enough specific constraints that the agent needs those constraints in the prompt to produce safe output.',
+        bullets: [
+          'Object and field ids must come from your app.json range — the agent will invent one unless told.',
+          'Extension objects are required — the agent may suggest base object changes without the constraint.',
+          'Posting logic belongs in event subscribers, not table or page triggers — state this rule explicitly.',
+          'Business rules must be stated — the agent cannot infer approval workflow steps or posting document flow.'
+        ]
+      },
+      {
+        heading: 'The anatomy of a good AL prompt',
+        body:
+          'A good prompt for a Business Central AL task has five components: the target object (table number, page number, codeunit name), the change (field, action, procedure, or event subscriber), the business reason (why and what it controls), the constraints (id range, extension-only, no base object changes), and the expected output format (list changed files, explain each change before applying).',
+        code:
+          'Add a Boolean field named AI Review Required to Business Central table 18 Customer. Use field id 50100 from the app.json range. Place the field on page 21 Customer Card in the General fast tab after the Blocked field. The field controls whether a customer requires an AI review before credit limit changes are approved. Use extension-safe tableextension and pageextension — do not modify base objects. Follow the existing naming style in this project. List every file changed and explain the purpose of each change before editing.'
+      },
+      {
+        heading: 'Naming tables, pages, and fields precisely',
+        body:
+          'Always include both the object name and object number in your prompt. "Table 18 Customer" is unambiguous. "The customer table" is not — there may be customer extension tables with similar names. The same applies to pages, codeunits, and enums. When asking the agent to subscribe to an event, name the exact codeunit and procedure.',
+        bullets: [
+          'Use object numbers: Table 18, Page 21, Codeunit 414, Report 205.',
+          'Use full field names in quotes: "AI Review Required", "Credit Limit (LCY)".',
+          'Name events with codeunit number and procedure: OnAfterPostSalesHeader in Codeunit 80.',
+          'Reference app.json for id ranges: state "use an id from the range defined in app.json".'
+        ]
+      },
+      {
+        heading: 'Anti-patterns that produce unsafe output',
+        body:
+          'Several prompt patterns reliably produce unsafe or unusable AL. Avoid open-ended scope, vague object references, asking the agent to improve code without a specific goal, and omitting the extension-safety constraint. Each of these invites the agent to make decisions that belong to the developer.',
+        bullets: [
+          'Vague scope: "improve this extension" — specify exactly what to change and why.',
+          'Missing constraints: always include "extension-only, no base object changes".',
+          'Fixing all errors at once: fix one compiler error at a time using the exact error message.',
+          'Skipping the review step: end every prompt with "list changed files and explain before editing".'
+        ]
+      }
+    ],
+    takeaways: [
+      'Business Central AL prompts need object numbers, id ranges, extension constraints, and a stated business reason.',
+      'Name objects precisely using both name and number to avoid ambiguity.',
+      'Include five components: target object, change, business reason, constraints, and output format.',
+      'Avoid vague scope and always include a review step before accepting code changes.'
+    ]
+  },
+  {
+    title: 'Using AI to Audit Deprecated AL Code Before a Business Central Upgrade',
+    slug: '/blog/ai-audit-deprecated-al-code-bc-upgrade',
+    read: '8 min read',
+    category: 'Codebase Navigation Agent',
+    description:
+      'Use codebase navigation agents to find deprecated objects, removed APIs, and upgrade-risk patterns across your AL project before a Business Central version upgrade.',
+    intro:
+      'Every Business Central major release deprecates or removes AL features, APIs, web services, and platform behaviors. Before upgrading a customer environment or moving an extension to a new version, a developer needs to know which parts of the existing codebase are affected. Codebase navigation agents are well suited for this audit because deprecated references can be scattered across multiple AL files, middleware projects, and integration configurations.',
+    sections: [
+      {
+        heading: 'What to look for in a deprecation audit',
+        body:
+          'A Business Central deprecation audit should find: AL objects marked with ObsoleteState = Pending or Removed, procedure calls to deprecated codeunit methods, references to removed API endpoints such as v1.0, SOAP web service endpoint references, deprecated report objects, and any direct references to features on the Microsoft removal list for the target version.',
+        bullets: [
+          'AL objects with ObsoleteState = Pending — will be removed in a future wave.',
+          'AL objects with ObsoleteState = Removed — break the build in the target version.',
+          'Procedure calls to deprecated codeunit methods flagged by the AL compiler.',
+          'API v1.0 endpoint references in integration code or middleware.',
+          'SOAP web service references in AL page objects or external configuration.',
+          'References to deprecated reports, permission sets, or platform behaviors.'
+        ]
+      },
+      {
+        heading: 'Using a codebase agent for the audit',
+        body:
+          'Give the codebase navigation agent a read-only audit task first. Ask it to search the entire project for deprecation markers, known removed items, and endpoint patterns for the target Business Central version. Do not ask the agent to fix anything until the full audit list is reviewed and prioritized.',
+        code:
+          'Audit this Business Central AL project for upgrade risk before moving to 2026 Wave 2. Search for: AL objects with ObsoleteState = Pending or Removed, procedure calls to deprecated codeunits, SOAP endpoint references in page objects or web service configuration, API v1.0 URL patterns in integration code, and any references to features removed in 2026 Wave 1 or scheduled for removal in Wave 2. List every finding with file path and line number. Do not edit any files.'
+      },
+      {
+        heading: 'Prioritizing the findings',
+        body:
+          'Sort audit findings by severity. Objects with ObsoleteState = Removed and SOAP endpoint references that break in Wave 2 are critical — they must be replaced before the upgrade. Objects with ObsoleteState = Pending are warnings — they work now but need a replacement plan. Deprecated reports and removed platform features are lower risk unless your users depend on them directly.',
+        bullets: [
+          'Critical: ObsoleteState = Removed, API v1.0 calls, SOAP endpoints removed in the target wave.',
+          'High: ObsoleteState = Pending in objects your extension directly depends on.',
+          'Medium: Deprecated reports, deprecated setup pages, removed platform features.',
+          'Low: Style or documentation deprecations with no functional impact on upgrade.'
+        ]
+      },
+      {
+        heading: 'Planning replacements after the audit',
+        body:
+          'Once the audit list is prioritized, use a design or coding agent to plan each replacement. For SOAP endpoints, use the same mapping approach described in the SOAP removal planning guide. For deprecated AL procedures, ask the agent to find the current replacement method in the standard library and draft the updated event subscriber or codeunit call.',
+        code:
+          'This AL codeunit references a procedure that is marked ObsoleteState = Removed in Business Central 2026 Wave 1. Find the recommended replacement procedure, explain the behavioral difference between old and new, and draft the updated AL code for this codeunit. Show only the changed procedure block.'
+      }
+    ],
+    takeaways: [
+      'Run a codebase agent deprecation audit before every Business Central major version upgrade.',
+      'Search for ObsoleteState markers, SOAP references, API v1.0 calls, and removed platform features.',
+      'Prioritize by impact: Removed breaks builds, Pending is a warning, others are medium risk.',
+      'Use a design agent to plan each replacement after the full audit list is reviewed.'
+    ]
+  },
+  {
+    title: 'AL Build Pipeline with AI Code Review',
+    slug: '/blog/al-build-pipeline-ai-code-review',
+    read: '11 min read',
+    category: 'Custom ERP Agent',
+    description:
+      'Add an AI review step to your Business Central AL build pipeline to catch object id conflicts, caption gaps, DataClassification issues, and upgrade risks before code is merged.',
+    intro:
+      'A Business Central AL build pipeline typically runs the AL compiler, executes test codeunits, and packages the app. Adding an AI review step before merge gives the pipeline a second check that focuses on AL-specific risks the compiler does not flag: missing captions, missing DataClassification, unsafe event subscriber patterns, permission gaps, and upgrade-sensitive changes. This step does not replace the compiler or test suite — it adds a safety layer for patterns that require business context to evaluate.',
+    sections: [
+      {
+        heading: 'Where AI review fits in an AL pipeline',
+        body:
+          'The AI review step belongs after the AL compiler succeeds and before the pull request is merged. It runs on the diff — the changed AL files in the pull request — rather than the whole codebase. This keeps the review fast and focused. The output is a list of findings categorized by severity: blocking issues, warnings, and informational notes.',
+        bullets: [
+          'Runs after the AL compiler succeeds, on the pull request diff only.',
+          'Checks for patterns the compiler does not flag: missing captions, DataClassification, ApplicationArea.',
+          'Produces a finding report with severity levels: blocking, warning, informational.',
+          'Does not replace the AL compiler, test codeunits, or sandbox validation.'
+        ]
+      },
+      {
+        heading: 'What to ask the AI reviewer to check',
+        body:
+          'The review prompt should be specific to AL extension risk. Ask for object id and field id range compliance, missing Caption and DataClassification properties, ApplicationArea coverage, event subscriber transaction timing, upgrade-sensitive schema changes, and any base object modification attempts. A focused list produces a useful report; an open-ended request produces noise.',
+        code:
+          'Review this Business Central AL pull request diff for extension risk. Check for: object or field ids outside the allowed app.json range, missing Caption or ToolTip on new fields or actions, missing DataClassification on new table fields, missing ApplicationArea on new controls, event subscribers that run inside a posting transaction without proper isolation, schema changes that could break an existing upgrade codeunit, and any direct base object modifications. List each finding with file and line reference. Categorize as blocking, warning, or informational. Do not rewrite code.'
+      },
+      {
+        heading: 'Adding the review step to GitHub Actions',
+        body:
+          'A GitHub Actions workflow for the AL review step collects the pull request diff, sends it to an AI API with your review prompt as context, and posts the findings as a pull request comment. The workflow can block merge on blocking-severity findings or post the report as a non-blocking advisory comment.',
+        code:
+          '# .github/workflows/al-ai-review.yml\nname: AL AI Code Review\non: [pull_request]\njobs:\n  review:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n        with:\n          fetch-depth: 0\n      - name: Collect AL diff\n        run: |\n          git diff origin/$BASE_REF...HEAD -- "*.al" > al_diff.txt\n        env:\n          BASE_REF: ${{ github.base_ref }}\n      - name: Run AI review\n        env:\n          AI_API_KEY: ${{ secrets.AI_API_KEY }}\n        run: |\n          # Send al_diff.txt + review prompt to your AI API\n          # Post findings as a PR comment using the gh CLI'
+      },
+      {
+        heading: 'Handling false positives and scoping the review',
+        body:
+          'AI review steps produce false positives. A field without ApplicationArea may be intentional for a hidden internal field. An event subscriber inside a posting flow may be correctly isolated. Treat review findings as a developer checklist, not a pass/fail gate. Reserve hard merge blocks for patterns that are definitively unsafe: object ids outside the declared range, confirmed base object modifications, or personal data fields without DataClassification.',
+        bullets: [
+          'Not every missing Caption is a real issue — internal-only fields may intentionally omit it.',
+          'Event subscriber timing warnings need human judgment about the specific AL pattern.',
+          'Reserve blocking merge for: ids out of range, base object changes, personal data without DataClassification.',
+          'Log false positives and refine the review prompt over time to reduce recurring noise.'
+        ]
+      }
+    ],
+    takeaways: [
+      'AI review in the AL pipeline catches caption gaps, DataClassification, and event timing issues the compiler misses.',
+      'Run the review on the pull request diff only — after compiler success, before merge.',
+      'Use a focused, AL-specific review prompt to reduce noise in the findings report.',
+      'Block on definitively unsafe patterns; treat other findings as a developer checklist.'
+    ]
+  },
+  {
+    title: 'Build Your Own Business Central Copilot Extension',
+    slug: '/blog/build-bc-copilot-extension',
+    read: '12 min read',
+    category: 'Custom ERP Agent',
+    description:
+      'Use the Business Central AI platform, generally available in 2026 Wave 1, to build a partner Copilot extension: AL structure, system prompts, grounding patterns, and publishing guidance.',
+    intro:
+      'The Business Central AI platform — "Use AI resources for Copilot extensions" — became generally available in 2026 Wave 1 update 28.1. It gives AL developers access to the same Copilot infrastructure Microsoft uses internally: Azure OpenAI integration codeunits, system prompt management, grounding data patterns, and a response pipeline that respects Business Central data boundaries. Partners can now build Copilot extensions that appear in the Copilot pane and respond to natural language, without connecting to an external AI API.',
+    sections: [
+      {
+        heading: 'What the BC Copilot platform provides to partners',
+        body:
+          'The platform exposes AI capabilities through AL interfaces and codeunits in the Business Central system app. Your extension registers a Copilot capability, provides a system prompt that scopes the agent behavior, and implements handler procedures that receive user input and return structured responses. The platform handles model selection, safety filtering, and response display within the Business Central environment.',
+        bullets: [
+          'Register a Copilot capability using the CopilotCapability enum extension pattern.',
+          'Provide a system prompt that defines the agent scope, persona, and data boundaries.',
+          'Implement handler codeunits using the AOAI integration interfaces exposed by BC.',
+          'The platform manages model calls, safety filtering, and Copilot pane display.'
+        ]
+      },
+      {
+        heading: 'AL structure for a Copilot capability',
+        body:
+          'A minimal Copilot extension registers a capability through an enum extension on the built-in Copilot Capability enum, then implements a handler codeunit that subscribes to the relevant Copilot events. The capability object makes your extension appear as an option in the Business Central Copilot pane alongside Microsoft-built features.',
+        code:
+          'enumextension 50200 "My Copilot Capability" extends "Copilot Capability"\n{\n    value(50200; "MySalesAssistant")\n    {\n        Caption = \'Sales Order Assistant\';\n    }\n}\n\ncodeunit 50201 "My Sales Copilot Handler"\n{\n    procedure GenerateResponse(UserInput: Text; var ResponseText: Text)\n    var\n        AzureOpenAI: Codeunit "Azure OpenAI";\n        AOAIChatMessages: Codeunit "AOAI Chat Messages";\n        AOAIChatCompletionParams: Codeunit "AOAI Chat Completion Params";\n        AOAIOperationResponse: Codeunit "AOAI Operation Response";\n    begin\n        AzureOpenAI.SetAuthorization(Enum::"AOAI Model Type"::"Chat Completions", \'gpt-4o\');\n        AOAIChatMessages.SetPrimarySystemPrompt(GetSystemPrompt());\n        AOAIChatMessages.AddUserMessage(UserInput);\n        AzureOpenAI.GenerateChatCompletion(AOAIChatMessages, AOAIChatCompletionParams, AOAIOperationResponse);\n        if AOAIOperationResponse.IsSuccess() then\n            ResponseText := AOAIChatMessages.GetLastMessage();\n    end;\n\n    local procedure GetSystemPrompt(): Text\n    begin\n        exit(\'You are a Business Central sales assistant. Answer questions about open sales orders and customer balances only. Use the data provided in context.\');\n    end;\n}'
+      },
+      {
+        heading: 'Writing an effective system prompt',
+        body:
+          'The system prompt defines what your Copilot extension can and cannot do. For a Business Central Copilot extension, scope the prompt to a specific domain — sales order questions, inventory checks, customer balance lookups — and instruct the agent to use only data passed in the grounding context. A narrow, bounded system prompt produces more reliable and auditable responses.',
+        bullets: [
+          'Scope to a specific BC domain — avoid building a general-purpose assistant.',
+          'Instruct the agent to use only data provided in the context, not general AI knowledge for financial facts.',
+          'Define how to handle out-of-scope questions: acknowledge the limitation and guide the user.',
+          'State the output format: plain text, a structured list, or a specific field pattern.'
+        ]
+      },
+      {
+        heading: 'Safety and grounding patterns',
+        body:
+          'Business Central Copilot extensions operate in environments with live financial data. Ground responses in queried Business Central records rather than AI inference. Avoid generating AL code or executable content as output. Apply DataClassification awareness — do not pass personal or sensitive fields into the AI prompt context without explicit business justification.',
+        bullets: [
+          'Ground responses in queried BC data — pass relevant records into context before calling the model.',
+          'Do not output AL code, formulas, or executable content from the Copilot response.',
+          'Apply DataClassification checks before passing customer or employee data into the prompt.',
+          'Log Copilot interactions if your privacy policy or regulatory context requires auditability.'
+        ]
+      },
+      {
+        heading: 'Testing and publishing',
+        body:
+          'Test the extension in a Business Central sandbox with the Copilot pane enabled. Verify the capability appears in the Copilot option list, the system prompt scope is correctly enforced, and out-of-scope questions are handled gracefully. Before submitting to AppSource, review the Microsoft Copilot extension requirements in the partner documentation to confirm safety and privacy requirements are met.',
+        bullets: [
+          'Enable the Copilot pane in a sandbox and confirm your capability appears as an option.',
+          'Test normal-path responses, out-of-scope questions, and empty-data edge cases.',
+          'Review AppSource Copilot extension submission requirements before packaging.',
+          'Align your privacy policy with the data you pass into the Copilot prompt context.'
+        ]
+      }
+    ],
+    takeaways: [
+      'The BC Copilot AI platform is generally available in 2026 Wave 1 — partners build without an external AI API.',
+      'Register a CopilotCapability enum extension, write a scoped system prompt, and implement an AOAI handler codeunit.',
+      'Ground responses in queried Business Central data, not general AI inference.',
+      'Test in a sandbox with the Copilot pane enabled and review AppSource requirements before publishing.'
+    ]
   }
 ];
 
@@ -587,27 +934,27 @@ export const categories = [
   {
     name: 'IDE Coding Assistant',
     description: 'Inline assistants for Visual Studio Code completions, small AL refactors, and chat help.',
-    count: 1
+    count: 2
   },
   {
     name: 'Design and Prompt Agent',
     description: 'Agents that turn Business Central requests into requirements, prompts, risks, and tests.',
-    count: 2
+    count: 3
   },
   {
     name: 'Codebase Navigation Agent',
     description: 'AI-first editors that map AL objects, dependencies, and multi-file feature changes.',
-    count: 2
+    count: 3
   },
   {
     name: 'Review and Documentation Agent',
     description: 'Agents that check AL risk, summarize pull requests, and draft Business Central documentation.',
-    count: 1
+    count: 2
   },
   {
     name: 'Custom ERP Agent',
     description: 'Team-specific agents that follow your AL standards, id ranges, naming rules, and release checks.',
-    count: 2
+    count: 4
   }
 ];
 
@@ -740,6 +1087,21 @@ export const faqs = [
     question: 'When will SOAP web services be removed from Business Central?',
     answer:
       'SOAP web services for Microsoft UI pages are scheduled for removal in Business Central 2026 release wave 2. OData v4 and API pages are not affected. Start auditing SOAP-dependent integrations now using a codebase navigation agent to find all SOAP endpoint references, then plan replacements using OData v4 or custom AL API pages.'
+  },
+  {
+    question: 'How do I write better AI prompts for Business Central AL development?',
+    answer:
+      'Include five components in every AL prompt: the target object (with both name and number, e.g. "Table 18 Customer"), the specific change needed, the business reason, the constraints (extension-only, no base object changes, id range from app.json), and the expected output format (list files before editing). Avoid vague scope like "improve this code" and always end with a review step before the agent applies any changes.'
+  },
+  {
+    question: 'Can I build a custom Copilot feature inside Business Central?',
+    answer:
+      'Yes. The Business Central AI platform — "Use AI resources for Copilot extensions" — became generally available in 2026 Wave 1 update 28.1. Partners can register a CopilotCapability enum extension, write a system prompt, and implement a handler codeunit using the AOAI integration codeunits exposed by Business Central. The extension appears in the Copilot pane without requiring a separate external AI API.'
+  },
+  {
+    question: 'Should I add AI code review to my Business Central AL build pipeline?',
+    answer:
+      'Yes, as a complementary step after the AL compiler succeeds. An AI review step catches issues the compiler cannot flag: missing Caption or DataClassification on new fields, ApplicationArea gaps, event subscriber transaction timing risks, and object ids outside the declared range. Run the review on the pull request diff only, produce a severity-categorized findings report, and reserve hard merge blocks for definitively unsafe patterns like base object changes or personal data fields without DataClassification.'
   }
 ];
 
