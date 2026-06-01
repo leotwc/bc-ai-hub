@@ -502,73 +502,81 @@ export const articles = [
   {
     title: 'Claude Code for Business Central AL Development',
     slug: '/blog/claude-code-business-central-al',
-    read: '11 min read',
+    read: '10 min read',
     category: 'Autonomous Coding Agent',
     description:
-      'Use Claude Code, the CLI coding agent from Anthropic, to inspect AL projects, edit multi-file extensions, run compiler checks, and connect to the Business Central MCP Server for diagnostics.',
+      'Use Claude Code, the CLI coding agent from Anthropic, to inspect AL projects, edit multi-file extensions, run build commands, and connect to the Business Central MCP Server for compiler diagnostics.',
     intro:
-      'Claude Code is Anthropic\'s command-line coding agent. Unlike Claude on the web, Claude Code runs in your terminal alongside Visual Studio Code, reads your AL project files directly, executes build and compiler commands, and makes targeted edits across multiple files in a single interactive session. For Business Central developers, Claude Code is especially useful because it supports MCP natively — which means it can connect directly to the BC MCP Server for AL diagnostics introduced in update 28.1, removing the manual step of copying compiler errors into a chat window.',
+      'Claude Code is Anthropic\'s command-line coding agent. Unlike Claude on the web — where you paste code and read suggestions — Claude Code runs in your terminal alongside Visual Studio Code, reads your AL project files directly, runs commands you authorize, and writes changes back to disk. For Business Central developers, the most practical advantage is project awareness: Claude Code can inspect your app.json, id ranges, naming patterns, and existing AL objects at the start of every session, then use that context when drafting or editing extension code.',
     sections: [
       {
         heading: 'How Claude Code differs from Claude on the web',
         body:
-          'Claude on the web is a conversational interface. You paste code, describe a problem, and read suggestions — but the model cannot see your project, run commands, or edit files. Claude Code is a CLI agent that runs in your project directory. It reads the AL source files, inspects app.json, runs commands you authorize, and writes changes back to disk. The key difference for Business Central work is that Claude Code can inspect your whole extension project in one session, the same way Codex can.',
+          'Claude on the web is a chat interface. You describe a problem, paste in code, and read the response — but the model cannot see your project, run the compiler, or edit files. Claude Code is an agent that runs inside your project directory. It reads your AL source files, executes shell commands you approve, and edits multiple files in a single session. For Business Central work this is the same fundamental difference as between GitHub Copilot Chat and Codex: one gives suggestions, the other acts on the project.',
         bullets: [
-          'Claude Code reads your actual AL files — no copy-pasting code into a chat window.',
-          'Can run build commands, read compiler output, and propose targeted fixes in one session.',
-          'Supports MCP servers natively, including the BC MCP Server for AL compiler diagnostics.',
-          'CLAUDE.md file lets you encode BC project rules that persist across every session.'
+          'Reads your actual AL files and app.json — no manual copy-pasting into a chat window.',
+          'Runs shell commands you approve: build scripts, git operations, file moves.',
+          'Edits multiple AL files in one session with full awareness of the changes it has made.',
+          'Supports MCP servers natively — can connect to the BC MCP Server for AL compiler diagnostics.'
         ]
       },
       {
-        heading: 'Setting up Claude Code for an AL project',
+        heading: 'Installing Claude Code and opening an AL project',
         body:
-          'Install Claude Code via npm and authenticate with your Anthropic account. Open Claude Code inside your Business Central extension folder. The first useful step is to create a CLAUDE.md file in the project root — this is a markdown file Claude Code reads at the start of every session. It replaces the context you would otherwise repeat in every prompt.',
+          'Install Claude Code using the official installer for your platform, then run it from inside your Business Central extension folder. Claude Code automatically reads your project files, git state, and any CLAUDE.md instruction file when the session starts.',
         code:
-          '# Install Claude Code\nnpm install -g @anthropic-ai/claude-code\n\n# Open Claude Code in your AL project root\ncd path/to/your-bc-extension\nclaude'
+          '# Windows (PowerShell)\nirm https://claude.ai/install.ps1 | iex\n\n# Windows (WinGet)\nwinget install Anthropic.ClaudeCode\n\n# macOS / Linux\ncurl -fsSL https://claude.ai/install.sh | bash\n\n# Start a session in your AL project folder\ncd C:\\path\\to\\your-bc-extension\nclaude'
       },
       {
         heading: 'Writing CLAUDE.md for a Business Central AL project',
         body:
-          'CLAUDE.md is the most important setup step for Business Central work. It tells Claude Code your id ranges, object prefix, naming conventions, build command, and extension safety rules — once, permanently. Without it, you repeat this context in every prompt and risk the agent making unsafe choices.',
+          'CLAUDE.md is a markdown file in your project root that Claude Code reads at the start of every session. For Business Central work it is the most valuable setup step — it encodes your id range, object prefix, extension safety rules, and build command once, so you do not repeat them in every prompt. Run /init inside Claude Code to auto-generate a starting version from your codebase, then add the BC-specific rules.',
         code:
-          '# CLAUDE.md — Business Central AL Project\n\n## Project rules\n- Object prefix: MYCO\n- Object id range: 50000–59999 (from app.json)\n- Field id range: 50000–59999\n- Extension-only: never modify base application objects directly\n- Use tableextension, pageextension, codeunit, enumextension, and event subscribers\n\n## Build\n- Run `alc build` to compile. Fix one compiler error at a time.\n- Publish to sandbox before marking any task complete\n\n## AL conventions\n- All new fields need Caption, ToolTip, DataClassification, and ApplicationArea\n- Event subscribers go in dedicated codeunits, not inline in page or table extensions\n- Never hardcode company names, dimensions, or approval codes\n\n## Review checklist before merge\n- Object and field ids inside the declared range\n- No ObsoleteState = Removed references\n- Sandbox tested with a non-SUPER user role'
+          '# CLAUDE.md — Business Central AL Project\n\n## Build\n- Compile: trigger AL: Package in VS Code, or run alc.exe directly if in PATH\n- Fix one compiler error at a time using the exact error message\n- Publish to sandbox before marking any task complete\n\n## Project rules\n- Object prefix: MYCO\n- Object id range: 50000–59999 (see app.json)\n- Field id range: 50000–59999\n- Extension-only: never modify base application objects\n- Allowed object types: tableextension, pageextension, codeunit, enumextension, report extension, event subscribers\n\n## AL conventions\n- All new fields need Caption, ToolTip, DataClassification, and ApplicationArea\n- Event subscribers go in dedicated codeunits, not inline in extensions\n- Never hardcode company names, dimensions, user names, or approval codes\n\n## Review checklist before merge\n- Object and field ids inside the declared range\n- No ObsoleteState = Removed references\n- Tested in sandbox with a non-SUPER user role'
+      },
+      {
+        heading: 'A practical BC development session',
+        body:
+          'Start every session with a project inspection before asking for edits. This gives Claude Code accurate context for your actual id ranges, naming style, and existing object structure. Skipping inspection leads to invented ids and inconsistent naming.',
+        code:
+          'Inspect this Business Central AL project. Read app.json and identify the object prefix, allowed id range, and all existing AL objects with their types and ids. Note any objects marked ObsoleteState = Pending. Do not edit any files. Summarize what you found and tell me the next available object id and field id.\n\n---\n\nAdd a Boolean field named Requires AI Review to table 18 Customer using the next available field id from the range. Place it on page 21 Customer Card in the General fast tab after the Blocked field. Use tableextension and pageextension following the naming style already in this project. Add Caption, ToolTip, DataClassification = CustomerContent, and ApplicationArea = All. After editing, list every changed file and explain each change.'
       },
       {
         heading: 'Connecting Claude Code to the BC MCP Server for AL',
         body:
-          'The Business Central MCP Server for AL (generally available in update 28.1) exposes AL compiler diagnostics as a structured data source. Claude Code can connect to it as an MCP client. Once connected, you can ask Claude Code to read the current build diagnostics directly — no manual copying of error messages. The workflow becomes: write AL, trigger a build in VS Code, switch to the terminal and ask Claude Code to inspect the diagnostics and propose fixes.',
+          'The Business Central MCP Server for AL (generally available in update 28.1) exposes AL compiler diagnostics as structured data. Claude Code supports MCP natively — use the claude mcp add command to register the server endpoint. Once connected, Claude Code can read build errors directly instead of you copying them from the VS Code output panel.',
+        code:
+          '# Register the BC MCP Server for AL in Claude Code\n# The AL Language extension exposes the server on a local endpoint\n# Enable the MCP Server in VS Code AL extension settings first, then:\nclaude mcp add --transport http bc-al http://localhost:<port>/mcp\n\n# Or for stdio transport (check AL extension docs for the exact command):\nclaude mcp add --transport stdio bc-al -- <path-to-al-mcp-server>\n\n# Verify the connection\nclaude mcp list'
+      },
+      {
+        heading: 'Useful Claude Code commands for AL sessions',
+        body:
+          'Several built-in Claude Code commands are useful during a Business Central session. Use /init once to generate a CLAUDE.md from your project. Use /compact when a long debugging session is consuming too much context. Use /model to switch to Claude Opus for complex posting-logic changes where deeper reasoning helps.',
         bullets: [
-          'Enable the MCP Server in the AL Language extension settings inside VS Code.',
-          'Add the MCP server endpoint to the Claude Code MCP configuration file.',
-          'Ask Claude Code to read diagnostics: "Check the current AL compiler output through MCP and fix each error."',
-          'Claude Code reads the structured diagnostic data and proposes targeted per-error fixes.'
+          '/init — Auto-generate a CLAUDE.md from your AL project structure.',
+          '/compact — Summarize the session history when the context grows long during a debugging loop.',
+          '/model — Switch to Claude Opus for risky changes: posting logic, permissions, upgrade codeunits.',
+          'Esc twice — Undo the last file edit and return to the previous checkpoint.',
+          'Shift+Tab — Cycle permission modes: default → auto-accept edits → plan mode.'
         ]
       },
       {
-        heading: 'A typical Claude Code session for BC AL work',
+        heading: 'Claude Code vs Codex for Business Central work',
         body:
-          'A practical session starts with a project inspection before any editing. Asking Claude Code to read the project first means its subsequent changes are based on your actual object ids, naming patterns, and app.json constraints — not invented values.',
-        code:
-          'Inspect this Business Central AL project. Read app.json, identify the object prefix and id range, list the existing AL objects and their types, and note any objects with ObsoleteState = Pending. Do not edit any files yet. Summarize what you found and confirm the next available object and field ids.\n\n---\n\nNow add a Boolean field named Requires AI Review to table 18 Customer using the next available field id. Place it on page 21 Customer Card after the Blocked field. Use a tableextension and pageextension following the patterns you found in this project. After editing, list every changed file and explain each change.'
-      },
-      {
-        heading: 'Claude Code vs Codex for Business Central',
-        body:
-          'Both Claude Code and Codex are autonomous coding agents that can inspect an AL project and make multi-file changes. The main practical differences are where they run and how you interact with them. Codex runs as a cloud agent that works asynchronously on tasks you assign. Claude Code runs locally in your terminal as an interactive session. For Business Central work, Claude Code is better suited for real-time debugging sessions alongside VS Code; Codex is better suited for longer background tasks you assign and review later.',
+          'Both are autonomous coding agents that read an AL project and make multi-file changes. The practical difference is interaction style. Claude Code is local and interactive — you guide it in real time in your terminal, undo mistakes immediately, and run short focused tasks alongside VS Code. Codex is a cloud agent built for longer asynchronous tasks you assign and review after completion. Neither replaces the other; they suit different moments in an AL development workflow.',
         bullets: [
-          'Claude Code: local CLI, interactive, good for debugging loops and MCP-connected sessions.',
-          'Codex: cloud agent, asynchronous, good for longer tasks you can review after completion.',
-          'Both support CLAUDE.md / system instructions for encoding AL project rules.',
-          'Both can read diagnostics with the BC MCP Server — Claude Code connects interactively, Codex in agent mode.'
+          'Claude Code: local, interactive, best for debugging loops, MCP-connected sessions, and short focused tasks.',
+          'Codex: cloud-based, asynchronous, best for longer planned tasks you assign and review later.',
+          'Both benefit from a project instruction file (CLAUDE.md / system prompt) that encodes AL standards.',
+          'Both can connect to the BC MCP Server for AL compiler diagnostics.'
         ]
       }
     ],
     takeaways: [
-      'Claude Code is a local CLI agent — it reads AL files, runs build commands, and edits projects directly without copy-pasting into a chat.',
-      'Create a CLAUDE.md file with your id range, object prefix, naming rules, and extension safety constraints to persist them across sessions.',
-      'Connect Claude Code to the BC MCP Server for AL to let it read compiler diagnostics without manual copy-paste.',
-      'Use Claude Code for interactive debugging sessions alongside VS Code; use Codex for longer background coding tasks.'
+      'Claude Code runs in your terminal, reads AL files, and edits projects directly — no copy-pasting into a chat window.',
+      'Add a CLAUDE.md file with your id range, prefix, extension rules, and build command; run /init to generate a starting version.',
+      'Always inspect the project first before asking for edits — this gives Claude Code accurate id and naming context.',
+      'Connect to the BC MCP Server for AL so Claude Code reads compiler diagnostics without you copying error messages manually.'
     ]
   },
   {
