@@ -547,34 +547,34 @@ export const codexBenefits = [
 
 export const codexModelComparison = [
   {
-    model: 'GPT-5.3-Codex',
+    model: 'codex-1',
     bestFor: 'Complex agentic builds',
     businessCentralUse:
-      'Use for multi-file AL features, codebase inspection, long-running refactors, and tasks that need terminal/tool use plus careful reasoning.'
+      'The primary Codex cloud agent model. Use for multi-file AL features, full project inspection, long-running refactors, and tasks that need tool use with careful reasoning across a large AL codebase.'
   },
   {
-    model: 'GPT-5.2-Codex',
-    bestFor: 'Large repository work',
-    businessCentralUse:
-      'Use for substantial extension changes, migrations, Windows-based AL projects, pull request repair, and longer sessions with context compaction.'
-  },
-  {
-    model: 'GPT-5-Codex',
+    model: 'codex-mini-latest',
     bestFor: 'Everyday coding agent work',
     businessCentralUse:
-      'Use for normal AL object creation, event subscriber drafts, page changes, code review, and iterative fixes when the task is clear.'
+      'Faster and more cost-effective than codex-1. Use for normal AL object creation, event subscriber drafts, page changes, code review, and iterative fixes when the task is clear and well-scoped.'
   },
   {
-    model: 'Lower reasoning effort',
+    model: 'o3 (Codex CLI)',
+    bestFor: 'Large repository work',
+    businessCentralUse:
+      'Use via the Codex CLI for substantial extension changes, migrations, pull request repair, and longer AL sessions where deep reasoning over many files and complex dependencies is needed.'
+  },
+  {
+    model: 'o4-mini (Codex CLI)',
     bestFor: 'Fast, low-risk edits',
     businessCentralUse:
-      'Use for captions, comments, documentation, simple prompts, and small file edits where speed matters more than deep planning.'
+      'Use for captions, comments, documentation, simple prompts, and small file edits where speed and cost matter more than deep planning. Set reasoning_effort to low for the fastest results.'
   },
   {
-    model: 'Higher reasoning effort',
+    model: 'reasoning_effort: high',
     bestFor: 'Risky ERP changes',
     businessCentralUse:
-      'Use for posting-related logic, permissions, upgrade-sensitive changes, integrations, and review tasks where mistakes can affect finance or operations.'
+      'Apply high reasoning effort on o3 or o4-mini for posting-related logic, permissions, upgrade-sensitive changes, integrations, and review tasks where mistakes can affect finance or live operations.'
   }
 ];
 
